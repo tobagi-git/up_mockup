@@ -373,6 +373,18 @@
   .issue-tag.warn{background:var(--amber-bg);color:var(--amber)}
   .issue-tag.info{background:var(--blue-soft);color:var(--blue)}
   .issue-tag.danger{background:var(--red-soft);color:var(--red)}
+
+  /* ── 레퍼럴 (상시 + 이벤트) ── */
+  .ref-codebox{background:#fafafa;border:1.5px dashed var(--line-2);border-radius:12px;padding:16px;text-align:center;
+    font-size:22px;font-weight:800;letter-spacing:1px;color:var(--blue);font-family:'SFMono-Regular',Consolas,'Liberation Mono',monospace}
+  .ref-linkrow{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;margin-top:10px}
+  .ref-linkrow .rl-text{flex:1;min-width:0;font-size:12px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ref-linkrow button{flex-shrink:0;border:none;background:var(--blue);color:#fff;font-size:12px;font-weight:600;padding:7px 12px;border-radius:7px}
+  .ref-friend-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .ref-friend-row:last-child{border-bottom:none}
+  .ref-event-block{border:1px solid var(--line-2);border-radius:12px;padding:14px;margin-bottom:10px}
+  .ref-event-block:last-child{margin-bottom:0}
+  .ref-event-title{font-size:13.5px;font-weight:700;margin-bottom:8px}
 </style>
 </head>
 <body>
@@ -569,6 +581,12 @@
       </div>
 
       <div class="card">
+        <h2><span data-edit="ev3.h.refer">친구와 함께하기</span> <span class="sub">공유하면 둘 다 랜덤박스</span></h2>
+        <p class="msub" style="margin-top:6px" data-edit="ev3.referNote">이 이벤트를 공유해서 친구가 참여하면 나와 친구 모두 랜덤박스를 받아요.</p>
+        <div id="ev3RefBox" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card">
         <h2><span data-edit="ev3.h.token">피처 토큰 선택</span> <span class="sub">토큰별 미션이 각각 진행돼요</span></h2>
         <div class="ttabs" id="ttabs"></div>
         <div class="tk-stat">
@@ -617,6 +635,12 @@
       <div class="ticker" id="ev2Ticker">김**님이 <b>골드 랜덤박스</b>를 받았어요.</div>
     </div>
     <div class="sheet">
+
+      <div class="card">
+        <h2><span data-edit="ev2.h.refer">친구와 함께하기</span> <span class="sub">공유하면 둘 다 랜덤박스</span></h2>
+        <p class="msub" style="margin-top:6px" data-edit="ev2.referNote">이 이벤트를 공유해서 친구가 참여하면 나와 친구 모두 랜덤박스를 받아요.</p>
+        <div id="ev2RefBox" style="margin-top:12px"></div>
+      </div>
 
       <div class="card">
         <h2><span data-edit="ev2.h.mission">전체 미션</span> <span class="sub">달성 즉시 보상 · 1회</span></h2>
@@ -766,7 +790,41 @@
   </div>
 </section>
 
-<!-- ═══════════ 8. 운영·홀드아웃 대시보드 (경영진 데모 · 내부용) ═══════════ -->
+<!-- ═══════════ 8. 레퍼럴 (상시 + 이벤트) ═══════════ -->
+<section class="screen" id="scr-referral">
+  <div class="col pad">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <h2 style="margin:0">친구 초대</h2>
+        <button class="btn btn-line btn-sm" onclick="go('benefit')">‹ 혜택</button>
+      </div>
+      <p class="admin-topnote" style="margin-top:10px">친구를 초대하면 나와 친구 모두 보상을 받아요. 실제로는 친구가 링크로 가입·참여해야 지급되는 보상이라, 이 데모에서는 <b>"시뮬레이션" 버튼</b>으로 그 순간을 체험할 수 있어요.</p>
+    </div>
+
+    <div class="card">
+      <h2>상시 레퍼럴 <span class="chiptag tag-live">언제나</span></h2>
+      <p class="msub" style="margin-top:6px">추천 코드로 친구가 가입하면 <b>나 +5,000P · 친구 +3,000P</b>가 지급돼요.</p>
+      <div id="referralAlwaysBox" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card">
+      <h2>이벤트 레퍼럴 <span class="sub">진행 중 이벤트별</span></h2>
+      <p class="msub" style="margin-top:6px">이벤트를 공유해서 친구가 참여하면 <b>둘 다 랜덤박스</b>를 받아요.</p>
+      <div style="margin-top:12px">
+        <div class="ref-event-block">
+          <div class="ref-event-title">🪙 멀티토큰 잔고 이전 챌린지</div>
+          <div id="ev3RefBoxHub"></div>
+        </div>
+        <div class="ref-event-block">
+          <div class="ref-event-title">📦 잔고 대이동 챌린지</div>
+          <div id="ev2RefBoxHub"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 9. 운영·홀드아웃 대시보드 (경영진 데모 · 내부용) ═══════════ -->
 <section class="screen" id="scr-admin">
   <div class="col pad">
     <div class="card">
@@ -866,6 +924,12 @@ const S = {
     ],
     cfo: {a:false,b:false,c:false,d:false,e:false},
   },
+  // ── 레퍼럴 (상시 + 이벤트) ──
+  referral: {
+    code: null, link: null,
+    friends: [],                                          // 상시 레퍼럴로 가입한 친구
+    events: { ev2:{link:null, invites:[]}, ev3:{link:null, invites:[]} },  // 이벤트별 공유·초대 현황
+  },
   couponUsed: false, couponActive: false,
   checkin: false, retroDone: false,
   exToken: 'AVAX', exAmt: 100000,
@@ -882,8 +946,8 @@ const S = {
 
 /* ══════════════ 리워드 실험실 — 여기에 항목을 추가하면 자동 렌더 ══════════════ */
 const LAB_FEATURES = [
-  { icon:'🤝', bg:'var(--blue-soft)', title:'친구 초대 리워드', desc:'추천 코드 공유 · 가입+첫 거래 시 양쪽 5,000P', btn:'코드 복사',
-    onclick:'labRefer()', id:'labReferBtn' },
+  { icon:'🤝', bg:'var(--blue-soft)', title:'친구 초대 리워드', desc:'상시 추천 코드 + 이벤트 공유로 나와 친구 모두 보상 받기', btn:'레퍼럴 보기',
+    onclick:"go('referral')", id:'labReferBtn' },
   { icon:'🏅', bg:'var(--amber-bg)', title:'시즌 패스 (예고)', desc:'분기별 미션 패스로 상위 티어·한정 배지 도전', btn:'미리보기',
     onclick:'labSeason()', id:'labSeasonBtn', tag:'실험' },
   { icon:'🧩', bg:'var(--teal-bg)', title:'AI 맞춤 미션 (예고)', desc:'행동 기반 개인화 챌린지를 자동 추천 (세그먼트/개인화)', btn:'미리보기',
@@ -970,12 +1034,12 @@ document.addEventListener('keydown', e=>{
 });
 
 /* ══════════════ 화면 전환 + 동선 가이드 ══════════════ */
-const TITLES = {home:'홈', exchange:'거래소', deposit:'입출금', benefit:'혜택·이벤트', ev3:'혜택·이벤트', ev2:'혜택·이벤트', my:'마이', admin:'운영 대시보드(내부)'};
+const TITLES = {home:'홈', exchange:'거래소', deposit:'입출금', benefit:'혜택·이벤트', ev3:'혜택·이벤트', ev2:'혜택·이벤트', my:'마이', admin:'운영 대시보드(내부)', referral:'친구 초대'};
 function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   $('scr-'+id).classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
-  const tabMap = {home:'home', exchange:'exchange', deposit:'deposit', benefit:'benefit', ev3:'benefit', ev2:'benefit', my:'my'};
+  const tabMap = {home:'home', exchange:'exchange', deposit:'deposit', benefit:'benefit', ev3:'benefit', ev2:'benefit', my:'my', referral:'benefit'};
   if (tabMap[id]) $('tab-'+tabMap[id]).classList.add('on');
   $('scrTitle').textContent = TITLES[id];
   document.querySelector('.guide').style.display = (id==='admin') ? 'none' : '';
@@ -994,7 +1058,7 @@ const GSTEPS = [
 ];
 function renderGuide(){
   const cur = document.querySelector('.screen.active').id.replace('scr-','');
-  const curStep = {home:0, benefit:1, ev3:2, ev2:2, exchange:3, deposit:3, my:4}[cur] ?? 0;
+  const curStep = {home:0, benefit:1, ev3:2, ev2:2, exchange:3, deposit:3, my:4, referral:1}[cur] ?? 0;
   $('guideBar').innerHTML = GSTEPS.map((g,i)=>{
     const done = g[1]();
     const cls = 'gstep' + (done?' done':'') + (i===curStep?' now':'');
@@ -1473,7 +1537,81 @@ function labCheckin(){
   toast('체크인 완료! 10P 적립 — 마이 탭에서 KRW 전환 가능');
   renderAll();
 }
-function labRefer(){ toast('추천 코드 UPBIT-RUBY 복사됨 (목업)'); addLog('추천 코드 공유 (실험 기능)'); }
+/* ══════════════ 레퍼럴 (상시 + 이벤트) ══════════════ */
+const REF_NAMES = ['이**','박**','최**','정**','한**','조**'];
+const EVENT_META = { ev2:{name:'잔고 대이동 챌린지'}, ev3:{name:'멀티토큰 잔고 이전 챌린지'} };
+function copyText(text, label){
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(()=>{});
+  toast(`${label} 복사됐어요`);
+}
+function genReferralCode(){
+  if (S.referral.code) return;
+  S.referral.code = 'UPBIT-' + Math.random().toString(36).slice(2,7).toUpperCase();
+  S.referral.link = `https://upbit.com/ref/${S.referral.code}`;
+  addLog('상시 레퍼럴 코드 생성');
+  toast('레퍼럴 코드가 생성됐어요!');
+  renderAll();
+}
+function simulateFriendSignup(){
+  if (!S.referral.code){ toast('먼저 레퍼럴 코드를 생성하세요'); return; }
+  const name = REF_NAMES[S.referral.friends.length % REF_NAMES.length];
+  S.referral.friends.push({name, reward:5000});
+  addPoints(5000, '상시 레퍼럴 — 친구 가입');
+  S.journey.reward = true;
+  addLog(`레퍼럴 완료: ${name}님 가입 → 나 +5,000P / ${name}님 +3,000P`);
+  showModal(`<div class="big" style="background:var(--blue-soft)">🤝</div><h3>레퍼럴 완료!</h3>
+    <p class="amt"><b>${name}님</b>이 내 링크로 가입했어요.<br>나에게 <b>5,000P</b>, ${name}님에게도 <b>3,000P</b>가 지급됐어요.</p>
+    <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal()">좋아요</button></div>`);
+  renderAll();
+}
+function genEventLink(evId){
+  const st = S.referral.events[evId];
+  if (st.link) return;
+  const code = Math.random().toString(36).slice(2,7).toUpperCase();
+  st.link = `https://upbit.com/event/${evId}?ref=${code}`;
+  addLog(`${EVENT_META[evId].name} 공유 링크 생성`);
+  renderAll();
+}
+function simulateEventFriend(evId){
+  const st = S.referral.events[evId];
+  if (!st.link){ toast('먼저 이벤트를 공유하세요'); return; }
+  const name = REF_NAMES[st.invites.length % REF_NAMES.length];
+  st.invites.push({name});
+  S.journey.reward = true;
+  addLog(`이벤트 레퍼럴: ${name}님이 ${EVENT_META[evId].name}에 참여 (친구도 랜덤박스 획득)`);
+  grantBox('bronze', `이벤트 초대 (${name}님 참여)`);
+}
+function renderEventReferralBox(evId, ...containerIds){
+  const st = S.referral.events[evId];
+  let html;
+  if (!st.link){
+    html = `<button class="btn btn-blue btn-full" onclick="genEventLink('${evId}')">이 이벤트 공유 링크 만들기</button>`;
+  } else {
+    html = `<div class="ref-linkrow"><span class="rl-text">${st.link}</span><button onclick="copyText('${st.link}','이벤트 공유 링크')">복사</button></div>
+      <button class="btn btn-line btn-full" style="margin-top:10px" onclick="simulateEventFriend('${evId}')">친구 참여 시뮬레이션</button>
+      <div style="margin-top:10px">${st.invites.length? st.invites.map(f=>`<div class="ref-friend-row"><span>${f.name}님 참여 완료</span><b style="color:var(--teal)">+랜덤박스</b></div>`).join('') : '<div class="foot-note" style="margin-top:0">아직 참여한 친구가 없어요.</div>'}</div>`;
+  }
+  containerIds.forEach(id=>{ const el=$(id); if (el) el.innerHTML = html; });
+}
+function renderReferral(){
+  const box = $('referralAlwaysBox');
+  if (box){
+    if (!S.referral.code){
+      box.innerHTML = `<button class="btn btn-blue btn-full" onclick="genReferralCode()">레퍼럴 코드 생성하기</button>`;
+    } else {
+      box.innerHTML = `
+        <div class="ref-codebox">${S.referral.code}</div>
+        <div class="ref-linkrow"><span class="rl-text">${S.referral.link}</span><button onclick="copyText('${S.referral.link}','레퍼럴 링크')">복사</button></div>
+        <button class="btn btn-line btn-full" style="margin-top:10px" onclick="simulateFriendSignup()">친구 가입 시뮬레이션</button>
+        <div style="margin-top:12px">
+          <div style="font-size:12px;color:var(--ink-4);font-weight:600;margin-bottom:4px">추천 현황 · ${S.referral.friends.length}명</div>
+          ${S.referral.friends.length? S.referral.friends.map(f=>`<div class="ref-friend-row"><span>${f.name}님 가입 완료</span><b style="color:var(--teal)">+${fmt(f.reward)}P</b></div>`).join('') : '<div class="foot-note" style="margin-top:0">아직 추천한 친구가 없어요.</div>'}
+        </div>`;
+    }
+  }
+  renderEventReferralBox('ev3','ev3RefBox','ev3RefBoxHub');
+  renderEventReferralBox('ev2','ev2RefBox','ev2RefBoxHub');
+}
 function labSeason(){ showModal(`<div class="big" style="background:var(--amber-bg)">🏅</div><h3>시즌 패스 (예고)</h3>
   <p class="amt">분기 단위 미션 패스로 상위 티어와 <b>한정 배지</b>에 도전하는 구조예요.<br>상시 허브의 티어·배지 위에 얹는 시즌 레이어입니다.</p>
   <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal()">기대할게요</button></div>`); }
@@ -1637,7 +1775,7 @@ function renderIssues(){
 
 /* ══════════════ 렌더 루트 ══════════════ */
 function renderAll(){
-  renderHome(); renderHub(); renderExchange(); renderDeposit(); renderEv3(); renderEv2(); renderMy(); renderLog(); renderLab(); renderAdmin(); renderGuide();
+  renderHome(); renderHub(); renderExchange(); renderDeposit(); renderEv3(); renderEv2(); renderMy(); renderLog(); renderLab(); renderReferral(); renderAdmin(); renderGuide();
   applySavedEdits(); applyEditMode();
 }
 renderAll();
