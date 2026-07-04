@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>잔고 대이동 챌린지 — 이벤트 목업 (스킴2 · 업비트 스타일)</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#18181b;         /* zinc-900 — 제목 */
+    --ink-2:#52525b;       /* zinc-600 — 본문 */
+    --ink-3:#71717a;       /* zinc-500 — 부제 */
+    --ink-4:#a1a1aa;       /* zinc-400 — 힌트 */
+    --line:#f0f0f2;        /* 구분선 */
+    --line-2:#e4e4e7;      /* 테두리 */
+    --blue:#2f6fe8;        /* 미션모듈 CTA 블루 */
+    --blue-soft:#eaf1fe;
+    --navy:#093687;        /* 업비트 브랜드 네이비 */
+    --amber:#b45309; --amber-bg:#fef3e2;
+    --teal:#0d9488;  --teal-bg:#e4f5f2;
+    --red:#dd3c44;         /* 업비트 상승/알림 레드 */
+    --purple:#7c3aed; --purple-bg:#f1eafe;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:#fff}
+  body{font-family:Pretendard,-apple-system,system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+       color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased;padding-bottom:96px}
+  .demo-tag{position:absolute;top:12px;left:12px;background:rgba(9,9,11,.5);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:11px;padding:4px 10px;border-radius:20px;z-index:5}
+
+  /* ── 상단 헤더 (혜택·이벤트) ── */
+  .topbar{position:sticky;top:0;background:#fff;z-index:20;border-bottom:1px solid var(--line)}
+  .topbar .in{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+  .brand{display:flex;align-items:center;gap:8px}
+  .brand .logo{font-weight:800;font-style:italic;font-size:20px;color:var(--navy);letter-spacing:-.5px}
+  .brand .svc{font-size:15px;font-weight:700;color:var(--ink)}
+  .copyurl{font-size:13px;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:5px}
+
+  .col{max-width:560px;margin:0 auto}
+
+  /* ── 히어로 ── */
+  .hero{background:linear-gradient(175deg,#0a1f4d 0%,#0d2f74 60%,#114093 100%);color:#fff;text-align:center;padding:36px 20px 88px;position:relative}
+  .hero .xbadge{display:inline-block;background:linear-gradient(90deg,#2f6fe8,#6d8ffa);font-size:12px;font-weight:700;letter-spacing:1px;padding:6px 14px;border-radius:999px}
+  .hero h1{font-size:28px;font-weight:800;line-height:1.32;margin:16px 0 10px;letter-spacing:-.3px}
+  .hero .dates{font-size:14px;color:rgba(255,255,255,.72)}
+  .hero .coin{width:132px;height:132px;margin:26px auto 0;border-radius:50%;
+    background:radial-gradient(circle at 34% 30%,#5a8bff 0%,#2f6fe8 45%,#0d2f74 100%);
+    display:flex;align-items:center;justify-content:center;font-size:56px;
+    box-shadow:0 18px 44px rgba(20,60,160,.55), inset 0 -8px 18px rgba(0,0,0,.28)}
+  .ticker{display:inline-flex;align-items:center;gap:6px;background:rgba(10,16,32,.5);border:1px solid rgba(255,255,255,.14);
+    color:#fff;font-size:13px;padding:9px 18px;border-radius:999px;margin-top:24px}
+  .ticker b{color:#9dbcff}
+
+  /* ── 카드 공통 ── */
+  .sheet{margin-top:-28px;position:relative;display:flex;flex-direction:column;gap:12px;padding:0 12px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 20px;box-shadow:0 1px 3px rgba(24,24,27,.04)}
+  .card>h2{font-size:18px;font-weight:700;color:var(--ink);display:flex;align-items:baseline;gap:8px}
+  .card>h2 .sub{font-size:12px;font-weight:400;color:var(--ink-4);margin-left:auto}
+  .foot-note{font-size:12px;color:var(--ink-4);line-height:1.6;margin-top:14px}
+
+  /* ── 미션 행 ── */
+  .mrow{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .mrow:last-child{border-bottom:none;padding-bottom:2px}
+  .micon{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700}
+  .mbody{flex:1;min-width:0}
+  .mtitle{font-size:16px;font-weight:600;color:var(--ink);letter-spacing:-.2px}
+  .msub{font-size:14px;color:var(--ink-3);line-height:20px;margin-top:3px}
+  .mstate{flex-shrink:0}
+  .chip{font-size:13px;font-weight:600;padding:8px 14px;border-radius:8px;border:none;cursor:pointer;font-family:inherit}
+  .chip-go{background:var(--blue);color:#fff}
+  .chip-done{background:#f4f4f5;color:var(--ink-4);cursor:default}
+  .chip-line{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+
+  /* ── 퀴즈 ── */
+  .quiz-q{background:#fafafa;border:1px solid var(--line);border-radius:12px;padding:16px;font-size:15px;font-weight:600;line-height:1.5;margin:16px 0 10px}
+  .quiz-opts{display:flex;flex-direction:column;gap:8px}
+  .opt{border:1px solid var(--line-2);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--ink-2);cursor:pointer;background:#fff;text-align:left;font-family:inherit;transition:.15s}
+  .opt:hover{border-color:var(--blue)}
+  .opt.correct{border-color:var(--teal);background:var(--teal-bg);color:#0f766e;font-weight:600}
+  .opt.wrong{border-color:var(--red);opacity:.5}
+  .quiz-done{display:none;background:var(--teal-bg);border-radius:12px;padding:15px 16px;font-size:14px;color:#0f766e;font-weight:600;line-height:1.55;margin-top:16px}
+
+  /* ── 선착순 ── */
+  .fcfs-bar{height:8px;background:#f4f4f5;border-radius:99px;overflow:hidden;margin:16px 0 8px}
+  .fcfs-fill{height:100%;width:62%;background:var(--red);border-radius:99px}
+  .fcfs-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-3)}
+  .fcfs-row b{color:var(--red);font-weight:700}
+  .callout{background:var(--blue-soft);border-radius:12px;padding:13px 15px;font-size:13px;color:#1d4fb8;line-height:1.6;margin-top:14px}
+
+  /* ── 예상 등급 ── */
+  .grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .g-cell{border:1px solid var(--line-2);border-radius:12px;padding:15px}
+  .g-label{font-size:12px;color:var(--ink-3)}
+  .g-val{font-size:21px;font-weight:800;margin-top:4px;letter-spacing:-.3px}
+  .g-val small{font-size:12px;font-weight:500;color:var(--ink-4);margin-left:4px}
+  .g-bar{height:5px;background:#f4f4f5;border-radius:99px;margin-top:10px;overflow:hidden}
+  .g-fill{height:100%;background:var(--blue);border-radius:99px}
+  .g-next{font-size:12px;color:var(--blue);margin-top:7px;line-height:1.45}
+  .estimate{display:flex;gap:8px;background:#fffbeb;border:1px solid #fde8b8;border-radius:12px;padding:12px 14px;margin-top:12px}
+  .estimate p{font-size:12.5px;color:var(--amber);line-height:1.6}
+
+  /* ── 스탬프 ── */
+  .stamps{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:16px}
+  .stamp{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;border:1px dashed var(--line-2);color:var(--ink-4);position:relative}
+  .stamp.on{background:var(--blue);border:none;color:#fff}
+  .stamp.today{border:1.5px solid var(--blue);color:var(--blue)}
+  .stamp.bonus::after{content:"🎁";position:absolute;top:-8px;right:-4px;font-size:12px}
+
+  /* ── 랜덤박스 ── */
+  .boxes{display:flex;gap:10px;margin-top:16px}
+  .boxcard{flex:1;border:1px solid var(--line-2);border-radius:12px;padding:16px 10px;text-align:center}
+  .boxcard .bicon{width:44px;height:44px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:21px}
+  .boxcard .name{font-size:14px;font-weight:700;margin-top:8px}
+  .boxcard .cnt{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .boxcard button{margin-top:10px;width:100%;padding:9px 0}
+  .chip-open{background:var(--navy);color:#fff}
+  .chip-open:disabled{background:#f4f4f5;color:var(--ink-4);cursor:default}
+
+  /* ── 일정 타임라인 ── */
+  .tl{margin-top:16px}
+  .tl-item{display:flex;gap:14px}
+  .tl-rail{display:flex;flex-direction:column;align-items:center;width:12px;flex-shrink:0}
+  .tl-dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);margin-top:5px;flex-shrink:0}
+  .tl-dot.on{background:var(--blue)}
+  .tl-line{width:1.5px;flex:1;background:var(--line);min-height:24px}
+  .tl-body{padding-bottom:16px}
+  .tl-t{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .tl-d{font-size:13px;color:var(--ink-3);margin-top:3px;line-height:1.5}
+
+  /* ── 꼭 알아두세요 ── */
+  .know h2{margin-bottom:6px}
+  .know ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:11px}
+  .know li{display:flex;gap:9px;font-size:14px;color:var(--ink-2);line-height:1.55}
+  .know li::before{content:"✓";flex-shrink:0;width:18px;height:18px;border-radius:50%;background:var(--teal-bg);color:var(--teal);
+    font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+  /* ── 하단 고정 CTA ── */
+  .ctabar{position:fixed;left:0;right:0;bottom:0;background:linear-gradient(to top,#fff 72%,rgba(255,255,255,0));padding:18px 12px 20px;z-index:30}
+  .ctabar .in{max-width:536px;margin:0 auto}
+  .cta{width:100%;height:52px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-size:16px;font-weight:500;cursor:pointer;font-family:inherit}
+  .cta:active{opacity:.9}
+
+  /* ── 토스트/모달 ── */
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:-90px;background:#18181b;color:#fff;font-size:13px;padding:12px 20px;border-radius:99px;transition:bottom .35s;z-index:60;white-space:nowrap}
+  .toast.show{bottom:92px}
+  .modal-bg{position:fixed;inset:0;background:rgba(9,9,11,.55);display:none;align-items:center;justify-content:center;z-index:50}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:20px;padding:32px 24px 24px;width:300px;text-align:center;animation:pop .22s}
+  @keyframes pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .big{width:76px;height:76px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:38px;background:var(--blue-soft)}
+  .modal h3{font-size:17px;font-weight:700;margin:14px 0 6px}
+  .modal .amt{font-size:14px;color:var(--ink-2);line-height:1.55}
+  .modal .amt b{color:var(--blue)}
+  .modal .min-note{font-size:11.5px;color:var(--ink-4);margin-top:10px}
+  .modal button{margin-top:18px;width:100%;height:48px;border:none;border-radius:8px;background:var(--blue);color:#fff;font-size:15px;font-weight:500;cursor:pointer;font-family:inherit}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="in">
+    <div class="brand"><span class="logo">UPbit</span><span class="svc">혜택·이벤트</span></div>
+    <div class="copyurl" onclick="toast('URL이 복사되었습니다 (목업)')">🔗 URL 복사</div>
+  </div>
+</header>
+
+<div class="col">
+
+  <!-- hero -->
+  <section class="hero">
+    <div class="demo-tag">UX 목업 · 스킴2 (데이터는 예시)</div>
+    <span class="xbadge">UPBIT 미션 이벤트</span>
+    <h1>잔고 대이동 챌린지</h1>
+    <p class="dates">2026.07.01 10:00 - 2026.07.14 23:59</p>
+    <div class="coin">🪙</div>
+    <div class="ticker" id="ticker">김**님이 <b>&nbsp;골드 랜덤박스&nbsp;</b>를 받았어요.</div>
+  </section>
+
+  <div class="sheet">
+
+    <!-- 전체 미션 -->
+    <section class="card">
+      <h2>전체 미션 <span class="sub">달성 즉시 보상 · 1회</span></h2>
+      <div class="mrow">
+        <div class="micon" style="background:var(--teal-bg);color:var(--teal)">?</div>
+        <div class="mbody">
+          <div class="mtitle">오늘의 퀴즈</div>
+          <div class="msub">매일 1문제, 완료하고 브론즈 랜덤박스 받아가세요!</div>
+        </div>
+        <div class="mstate"><button class="chip chip-line" onclick="scrollToQuiz()">풀기</button></div>
+      </div>
+      <div class="mrow">
+        <div class="micon" style="background:var(--blue-soft);color:var(--blue)">⇄</div>
+        <div class="mbody">
+          <div class="mtitle">거래 미션</div>
+          <div class="msub">원화마켓에서 10만 원 이상 거래하고 실버 랜덤박스 받아가세요! 달성 시 거래 등급전에 자동 참가돼요.</div>
+        </div>
+        <div class="mstate"><button class="chip chip-done">달성 완료</button></div>
+      </div>
+      <div class="mrow">
+        <div class="micon" style="background:var(--amber-bg);color:var(--amber)">↓</div>
+        <div class="mbody">
+          <div class="mtitle">입금 미션</div>
+          <div class="msub">외부에서 50만 원 이상 순입금하고 실버 랜덤박스 받아가세요! 달성 시 순입금 등급전에 자동 참가돼요.</div>
+        </div>
+        <div class="mstate"><button class="chip chip-go" onclick="toast('입금 화면으로 이동합니다 (목업)')">참여</button></div>
+      </div>
+      <div class="mrow">
+        <div class="micon" style="background:var(--purple-bg);color:var(--purple)">✓</div>
+        <div class="mbody">
+          <div class="mtitle">출석 미션</div>
+          <div class="msub">매일 출석 도장을 모으세요. 출석일수만큼 정산 보너스, 14일차 피날레 박스!</div>
+        </div>
+        <div class="mstate"><button class="chip chip-go" id="attendBtn" onclick="attend()">출석</button></div>
+      </div>
+    </section>
+
+    <!-- 오늘의 퀴즈 -->
+    <section class="card" id="quizCard">
+      <h2>오늘의 퀴즈 <span class="sub">매일 자정 초기화</span></h2>
+      <div id="quizBody">
+        <div class="quiz-q">Q. ‘순입금’으로 인정되는 것은 무엇일까요?</div>
+        <div class="quiz-opts">
+          <button class="opt" onclick="answer(this,false)">업비트 안에서 내 계정끼리 옮긴 디지털 자산</button>
+          <button class="opt" onclick="answer(this,true)">외부 지갑·타 거래소에서 새로 입금한 디지털 자산</button>
+        </div>
+      </div>
+      <div class="quiz-done" id="quizDone">정답입니다! 브론즈 랜덤박스 1개와 추첨 응모권 1장을 받았어요. 내일 새 퀴즈로 다시 만나요.</div>
+      <p class="foot-note">퀴즈 보상은 즉시 지급되며, 응모권은 이벤트 종료 후 추첨에 사용돼요.</p>
+    </section>
+
+    <!-- 선착순 -->
+    <section class="card">
+      <h2>선착순 골드+ 랜덤박스 <span class="sub">순입금 50만 원 달성 선착순</span></h2>
+      <div class="fcfs-bar"><div class="fcfs-fill" id="fcfsFill"></div></div>
+      <div class="fcfs-row"><span>선착순 500명</span><b id="fcfsLeft">잔여 188명</b></div>
+      <div class="callout">선착순이 마감되어도 기간 내 달성자 <b>전원</b>이 등급 보상을 받고, 종료 후 <b>추첨</b>으로 플래티넘 랜덤박스 기회가 한 번 더 있어요.</div>
+    </section>
+
+    <!-- 내 예상 등급 -->
+    <section class="card">
+      <h2>내 예상 등급 <span class="sub">어제 자정 기준</span></h2>
+      <div class="grade-grid">
+        <div class="g-cell">
+          <div class="g-label">거래 등급전</div>
+          <div class="g-val" style="color:var(--blue)">G2<small>골드 박스 예상</small></div>
+          <div class="g-bar"><div class="g-fill" style="width:64%"></div></div>
+          <div class="g-next">G3까지 누적 거래 320만 원 남았어요</div>
+        </div>
+        <div class="g-cell">
+          <div class="g-label">순입금 등급전</div>
+          <div class="g-val" style="color:var(--ink-4)">미참여</div>
+          <div class="g-bar"><div class="g-fill" style="width:0%"></div></div>
+          <div class="g-next">50만 원 순입금 시 N1 진입 + 선착순 대상</div>
+        </div>
+      </div>
+      <div class="estimate">
+        <p>등급은 이벤트 기간 <b>전체 누적 실적</b>으로 종료 후 확정돼요. 표시는 예상치이며, 등급 보상은 <b>7.15 ~ 7.21 정산 후 일괄 지급</b>됩니다.</p>
+      </div>
+    </section>
+
+    <!-- 출석 스탬프 -->
+    <section class="card">
+      <h2>출석 스탬프 <span class="sub" id="stampCnt">5 / 14일</span></h2>
+      <div class="stamps" id="stampGrid"></div>
+      <p class="foot-note">3·7·14일차에 보너스 박스 🎁 · 마지막 날 피날레 박스는 출석 10일 이상 달성자에게 드려요.</p>
+    </section>
+
+    <!-- 내 랜덤박스 -->
+    <section class="card">
+      <h2>내 랜덤박스 <span class="sub" id="invTotal">보유 3개</span></h2>
+      <div class="boxes">
+        <div class="boxcard">
+          <div class="bicon" style="background:#fdf0e4">🥉</div>
+          <div class="name">브론즈</div><div class="cnt" id="cntBronze">2개</div>
+          <button class="chip chip-open" id="btnBronze" onclick="openBox('bronze')">열기</button>
+        </div>
+        <div class="boxcard">
+          <div class="bicon" style="background:#f1f3f6">🥈</div>
+          <div class="name">실버</div><div class="cnt" id="cntSilver">1개</div>
+          <button class="chip chip-open" id="btnSilver" onclick="openBox('silver')">열기</button>
+        </div>
+        <div class="boxcard">
+          <div class="bicon" style="background:#fdf6dc">🥇</div>
+          <div class="name">골드</div><div class="cnt">정산 후</div>
+          <button class="chip chip-open" disabled>7.15 오픈</button>
+        </div>
+      </div>
+      <p class="foot-note">모든 랜덤박스는 꽝 없음 — 최소 보장 디지털 자산이 반드시 들어있어요. 구성/확률은 공시를 확인하세요.</p>
+    </section>
+
+    <!-- 진행 일정 -->
+    <section class="card">
+      <h2>진행 일정</h2>
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-rail"><div class="tl-dot on"></div><div class="tl-line"></div></div>
+          <div class="tl-body"><div class="tl-t">7.1 ~ 7.14 · 이벤트 기간</div><div class="tl-d">미션 달성 보상은 즉시, 등급전 실적은 계속 누적돼요</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+          <div class="tl-body"><div class="tl-t">7.15 ~ 7.16 · 정산 및 검증</div><div class="tl-d">누적 실적으로 등급 확정 · 순입금 유지 여부 확인</div></div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-rail"><div class="tl-dot"></div></div>
+          <div class="tl-body"><div class="tl-t">7.17 ~ 7.21 · 등급 보상 + 추첨 지급</div><div class="tl-d">등급별 랜덤박스 일괄 지급 · 플래티넘 추첨 발표</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 꼭 알아두세요 -->
+    <section class="card know">
+      <h2>꼭 알아두세요!</h2>
+      <ul>
+        <li>순입금은 외부 입금에서 외부 출금을 뺀 금액이에요. 내부 이체, 입금 후 곧바로 출금한 금액은 제외됩니다.</li>
+        <li>순입금은 이벤트 종료 시점까지 잔고를 유지해야 등급으로 인정돼요.</li>
+        <li>모든 미션은 반드시 각 미션의 참여 버튼을 먼저 클릭한 후 조건을 달성해야 인정됩니다.</li>
+        <li>1인 1계정(KYC 기준)만 참여할 수 있어요. 부정 참여 적발 시 보상이 회수될 수 있습니다.</li>
+        <li>준비된 랜덤박스 및 보상 수량이 모두 소진될 경우, 각 미션이 조기 종료될 수 있어요.</li>
+        <li>1인당 보상 상한이 적용되며, 미션 달성 여부 확인에는 다소 시간이 소요될 수 있습니다.</li>
+      </ul>
+    </section>
+
+  </div>
+</div>
+
+<!-- 하단 고정 CTA -->
+<div class="ctabar"><div class="in">
+  <button class="cta" onclick="toast('이벤트 참여가 시작되었어요! 미션을 달성해 보세요 (목업)')">이벤트 참여하기</button>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="big" id="mEmoji">🎁</div>
+    <h3 id="mTitle">축하해요!</h3>
+    <p class="amt" id="mBody"></p>
+    <p class="min-note">모든 박스는 최소 보장 지급 · 구성/확률 공시 확인</p>
+    <button onclick="closeModal()">보관함으로</button>
+  </div>
+</div>
+
+<script>
+  // 출석 스탬프: 5일 완료, 6일차 오늘
+  const grid = document.getElementById('stampGrid');
+  for (let d=1; d<=14; d++){
+    const s = document.createElement('div');
+    s.className = 'stamp' + (d<=5?' on':'') + (d===6?' today':'') + ([3,7,14].includes(d)?' bonus':'');
+    s.textContent = d<=5 ? '✓' : d;
+    grid.appendChild(s);
+  }
+
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2400);
+  }
+
+  function scrollToQuiz(){
+    document.getElementById('quizCard').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function answer(el, ok){
+    if (ok){
+      el.classList.add('correct');
+      setTimeout(()=>{
+        document.getElementById('quizBody').style.display='none';
+        document.getElementById('quizDone').style.display='block';
+        addBox('bronze');
+        showModal('🥉','브론즈 랜덤박스 획득!','오늘의 퀴즈 보상이 <b>즉시</b> 지급됐어요.<br>추첨 응모권 +1');
+      }, 450);
+    } else {
+      el.classList.add('wrong');
+      toast('아쉬워요! 한 번 더 생각해 보세요 (재도전 1회)');
+    }
+  }
+
+  let attended = false;
+  function attend(){
+    if (attended) return;
+    attended = true;
+    const b = document.getElementById('attendBtn');
+    b.textContent='출석 완료'; b.className='chip chip-done';
+    const today = document.querySelector('.stamp.today');
+    today.classList.remove('today'); today.classList.add('on'); today.textContent='✓';
+    document.getElementById('stampCnt').textContent = '6 / 14일';
+    toast('6일차 출석 완료! 7일차 보너스 🎁 가 하루 남았어요');
+  }
+
+  const inv = {bronze:2, silver:1};
+  const pool = {
+    bronze:[['도지코인','DOGE','약 1,200원 상당'],['스텔라루멘','XLM','약 900원 상당'],['트론','TRX','약 1,500원 상당']],
+    silver:[['폴리곤','POL','약 3,400원 상당'],['에이다','ADA','약 2,800원 상당'],['리플','XRP','약 4,100원 상당']]
+  };
+  function addBox(kind){ inv[kind]++; render(); }
+  function openBox(kind){
+    if (inv[kind]<=0){ toast('보유한 박스가 없어요'); return; }
+    inv[kind]--;
+    const [name,sym,amt] = pool[kind][Math.floor(Math.random()*pool[kind].length)];
+    showModal(kind==='bronze'?'🥉':'🥈', name+' 당첨!', '<b>'+sym+'</b> '+amt+'이<br>내 계정으로 바로 입금됐어요.');
+    render();
+  }
+  function render(){
+    document.getElementById('cntBronze').textContent = inv.bronze+'개';
+    document.getElementById('cntSilver').textContent = inv.silver+'개';
+    document.getElementById('btnBronze').disabled = inv.bronze<=0;
+    document.getElementById('btnSilver').disabled = inv.silver<=0;
+    document.getElementById('invTotal').textContent = '보유 '+(inv.bronze+inv.silver)+'개';
+  }
+  render();
+
+  function showModal(emoji,title,body){
+    document.getElementById('mEmoji').textContent = emoji;
+    document.getElementById('mTitle').textContent = title;
+    document.getElementById('mBody').innerHTML = body;
+    document.getElementById('modalBg').classList.add('show');
+  }
+  function closeModal(e){
+    if (e && e.target !== document.getElementById('modalBg')) return;
+    document.getElementById('modalBg').classList.remove('show');
+  }
+
+  // 소셜 프루프 티커 (실제 ORDER 페이지 패턴)
+  const feed = [
+    ['김**','골드 랜덤박스'],['무**열','실버 랜덤박스'],['h***1','브론즈 랜덤박스'],
+    ['박**','골드+ 랜덤박스'],['5***9','실버 랜덤박스']
+  ];
+  let fi = 0;
+  setInterval(()=>{
+    fi = (fi+1) % feed.length;
+    document.getElementById('ticker').innerHTML = feed[fi][0]+'님이 <b>&nbsp;'+feed[fi][1]+'&nbsp;</b>를 받았어요.';
+  }, 3200);
+
+  // 선착순 잔여 감소 데모
+  let left = 188;
+  setInterval(()=>{
+    if (left>150 && Math.random()<.4){ left--;
+      document.getElementById('fcfsLeft').textContent='잔여 '+left+'명';
+      document.getElementById('fcfsFill').style.width = (100-left/5)+'%';
+    }
+  }, 3000);
+</script>
+</body>
+</html>

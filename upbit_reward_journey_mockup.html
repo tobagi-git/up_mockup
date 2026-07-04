@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>업비트 리워드 저니 목업 — 스킴3 멀티토큰 + 전체 동선</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+  :root{
+    --ink:#18181b; --ink-2:#52525b; --ink-3:#71717a; --ink-4:#a1a1aa;
+    --line:#f0f0f2; --line-2:#e4e4e7;
+    --blue:#2f6fe8; --blue-soft:#eaf1fe; --navy:#093687;
+    --amber:#b45309; --amber-bg:#fef3e2;
+    --teal:#0d9488; --teal-bg:#e4f5f2;
+    --red:#dd3c44; --red-soft:#fdecec;
+    --purple:#7c3aed; --purple-bg:#f1eafe;
+    --up:#dd3c44; --down:#1261c4;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{background:#fff}
+  body{font-family:Pretendard,-apple-system,system-ui,'Apple SD Gothic Neo',sans-serif;color:var(--ink);
+       background:#fff;-webkit-font-smoothing:antialiased;padding-bottom:76px}
+  button{font-family:inherit;cursor:pointer}
+  .col{max-width:560px;margin:0 auto}
+
+  /* ── 상단 헤더 + 동선 가이드 ── */
+  .topbar{position:sticky;top:0;background:#fff;z-index:20;border-bottom:1px solid var(--line)}
+  .topbar .in{max-width:560px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:13px 16px}
+  .brand{display:flex;align-items:center;gap:8px}
+  .brand .logo{font-weight:800;font-style:italic;font-size:19px;color:var(--navy);letter-spacing:-.5px;cursor:pointer}
+  .brand .svc{font-size:15px;font-weight:700;color:var(--ink)}
+  .top-right{font-size:12px;color:var(--ink-3)}
+  .guide{background:#fafafa;border-bottom:1px solid var(--line)}
+  .guide .in{max-width:560px;margin:0 auto;display:flex;gap:4px;padding:8px 12px;overflow-x:auto}
+  .gstep{flex-shrink:0;font-size:11px;color:var(--ink-4);padding:4px 9px;border-radius:99px;border:1px solid var(--line-2);background:#fff;white-space:nowrap}
+  .gstep.now{border-color:var(--blue);color:var(--blue);font-weight:700}
+  .gstep.done{background:var(--teal-bg);border-color:transparent;color:var(--teal);font-weight:600}
+
+  /* ── 화면 전환 ── */
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* ── 하단 탭바 ── */
+  .tabbar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:30}
+  .tabbar .in{max-width:560px;margin:0 auto;display:flex}
+  .tab{flex:1;border:none;background:none;padding:9px 0 10px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;color:var(--ink-4);position:relative}
+  .tab .ti{font-size:19px;line-height:1}
+  .tab.on{color:var(--ink);font-weight:700}
+  .tab .bdg{position:absolute;top:5px;right:calc(50% - 20px);width:7px;height:7px;border-radius:50%;background:var(--red)}
+
+  /* ── 카드 공통 ── */
+  .pad{padding:14px 12px;display:flex;flex-direction:column;gap:12px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 18px;box-shadow:0 1px 3px rgba(24,24,27,.04)}
+  .card>h2{font-size:17px;font-weight:700;display:flex;align-items:baseline;gap:8px}
+  .card>h2 .sub{font-size:12px;font-weight:400;color:var(--ink-4);margin-left:auto}
+  .foot-note{font-size:12px;color:var(--ink-4);line-height:1.6;margin-top:12px}
+  .callout{background:var(--blue-soft);border-radius:12px;padding:12px 14px;font-size:13px;color:#1d4fb8;line-height:1.6;margin-top:12px}
+  .warn{background:#fffbeb;border:1px solid #fde8b8;border-radius:12px;padding:11px 13px;font-size:12.5px;color:var(--amber);line-height:1.6;margin-top:12px}
+  .btn{border:none;border-radius:8px;font-size:14px;font-weight:600;padding:12px 16px}
+  .btn-blue{background:var(--blue);color:#fff}
+  .btn-line{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+  .btn-gray{background:#f4f4f5;color:var(--ink-4);cursor:default}
+  .btn-navy{background:var(--navy);color:#fff}
+  .btn-sm{font-size:13px;padding:8px 14px}
+  .btn-full{width:100%;height:50px;font-size:15px;font-weight:500}
+  .chiptag{display:inline-block;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;vertical-align:2px}
+  .tag-live{background:var(--teal-bg);color:var(--teal)}
+  .tag-end{background:#f4f4f5;color:var(--ink-4)}
+  .tag-lab{background:var(--purple-bg);color:var(--purple)}
+  .tag-new{background:var(--red-soft);color:var(--red)}
+
+  /* ── 홈 ── */
+  .banner{border-radius:16px;overflow:hidden;color:#fff;padding:20px 18px;cursor:pointer;position:relative}
+  .banner .bt{font-size:12px;opacity:.85}
+  .banner h3{font-size:18px;font-weight:800;margin-top:4px;line-height:1.35}
+  .banner .go{position:absolute;right:16px;bottom:16px;font-size:12px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 12px;border-radius:99px}
+  .bn-ev3{background:linear-gradient(120deg,#134e4a,#0f766e 55%,#115e59)}
+  .bn-ev2{background:linear-gradient(120deg,#0a1f4d,#0d2f74 60%,#114093)}
+  .asset-sum{display:flex;justify-content:space-between;align-items:center}
+  .asset-sum .l{font-size:13px;color:var(--ink-3)}
+  .asset-sum .v{font-size:20px;font-weight:800;letter-spacing:-.3px}
+  .mkt-row{display:flex;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .mkt-row:last-child{border-bottom:none}
+  .mkt-name{flex:1}
+  .mkt-name .n{font-size:14.5px;font-weight:600}
+  .mkt-name .s{font-size:12px;color:var(--ink-4)}
+  .mkt-price{text-align:right;margin-right:14px}
+  .mkt-price .p{font-size:14.5px;font-weight:600}
+  .mkt-price .c{font-size:12px}
+  .c-up{color:var(--up)} .c-down{color:var(--down)}
+  .watch-star{font-size:18px;color:var(--ink-4);margin-right:10px;line-height:1;padding:2px}
+  .watch-star.on{color:#f5b301}
+
+  /* ── 거래소 ── */
+  .seg{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+  .seg button{border:1px solid var(--line-2);background:#fff;border-radius:8px;padding:8px 13px;font-size:13px;font-weight:600;color:var(--ink-2)}
+  .seg button.on{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+  .field{margin-top:14px}
+  .field .fl{font-size:12px;color:var(--ink-3);margin-bottom:6px}
+  .amounts{display:flex;gap:6px}
+  .amounts button{flex:1;border:1px solid var(--line-2);background:#fff;border-radius:8px;padding:10px 0;font-size:13px;font-weight:600}
+  .amounts button.on{border-color:var(--blue);color:var(--blue);background:var(--blue-soft)}
+  .fee-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);margin-top:12px}
+  .fee-row .strike{text-decoration:line-through;color:var(--ink-4);margin-right:6px}
+  .fee-row b.free{color:var(--teal)}
+
+  /* ── 미션 행 ── */
+  .mrow{display:flex;align-items:center;gap:13px;padding:15px 0;border-bottom:1px solid var(--line)}
+  .mrow:last-child{border-bottom:none;padding-bottom:2px}
+  .micon{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+  .mbody{flex:1;min-width:0}
+  .mtitle{font-size:15px;font-weight:600;letter-spacing:-.2px}
+  .msub{font-size:13px;color:var(--ink-3);line-height:1.5;margin-top:2px}
+  .mstate{flex-shrink:0}
+  .chip{font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:8px;border:none}
+  .chip-go{background:var(--blue);color:#fff}
+  .chip-line{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+  .chip-done{background:#f4f4f5;color:var(--ink-4);cursor:default}
+
+  /* ── 이벤트 히어로 ── */
+  .hero{color:#fff;text-align:center;padding:32px 20px 72px;position:relative}
+  .hero-ev3{background:linear-gradient(175deg,#0f3d3a 0%,#0f766e 60%,#14b8a6 130%)}
+  .hero-ev2{background:linear-gradient(175deg,#0a1f4d 0%,#0d2f74 60%,#114093 100%)}
+  .hero .back{position:absolute;top:14px;left:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:99px;font-size:12px;padding:5px 12px}
+  .hero .xbadge{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);font-size:11.5px;font-weight:700;letter-spacing:1px;padding:5px 13px;border-radius:999px}
+  .hero h1{font-size:25px;font-weight:800;line-height:1.32;margin:14px 0 8px;letter-spacing:-.3px}
+  .hero .dates{font-size:13px;color:rgba(255,255,255,.72)}
+  .hero .coins3{display:flex;justify-content:center;gap:-8px;margin-top:20px}
+  .hero .cc{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;border:3px solid rgba(255,255,255,.35);margin:0 -7px;box-shadow:0 10px 26px rgba(0,0,0,.3)}
+  .ticker{display:inline-flex;align-items:center;background:rgba(10,16,32,.45);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:12.5px;padding:8px 16px;border-radius:999px;margin-top:20px}
+  .ticker b{color:#a7f3d0;margin:0 4px}
+  .sheet{margin-top:-26px;position:relative;display:flex;flex-direction:column;gap:12px;padding:0 12px 8px}
+
+  /* ── 토큰 탭 (스킴3) ── */
+  .ttabs{display:flex;gap:8px}
+  .ttab{flex:1;border:1px solid var(--line-2);background:#fff;border-radius:12px;padding:12px 6px;text-align:center}
+  .ttab .sym{font-size:15px;font-weight:800}
+  .ttab .nd{font-size:11px;color:var(--ink-4);margin-top:2px}
+  .ttab.on{border-color:var(--teal);background:var(--teal-bg)}
+  .ttab.on .sym{color:var(--teal)}
+  .tk-stat{display:flex;gap:10px;margin-top:14px}
+  .tk-cell{flex:1;border:1px solid var(--line-2);border-radius:12px;padding:12px}
+  .tk-cell .l{font-size:11.5px;color:var(--ink-3)}
+  .tk-cell .v{font-size:16px;font-weight:800;margin-top:3px;letter-spacing:-.2px}
+  .tk-cell .v small{font-size:11px;font-weight:500;color:var(--ink-4)}
+
+  /* ── 콤보 ── */
+  .combo-dots{display:flex;gap:8px;margin-top:14px}
+  .cdot{flex:1;border:1px dashed var(--line-2);border-radius:12px;padding:12px 6px;text-align:center;font-size:12.5px;color:var(--ink-4)}
+  .cdot.on{border:1px solid var(--teal);background:var(--teal-bg);color:var(--teal);font-weight:700}
+
+  /* ── 혜택탭 리스트 ── */
+  .ev-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);cursor:pointer}
+  .ev-item:last-child{border-bottom:none}
+  .ev-thumb{width:52px;height:52px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff}
+  .ev-body{flex:1;min-width:0}
+  .ev-t{font-size:15px;font-weight:700}
+  .ev-s{font-size:13px;color:var(--ink-3);margin-top:2px}
+  .ev-item.end{opacity:.55;cursor:default}
+
+  /* ── 마이페이지 ── */
+  .hold-row{display:flex;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+  .hold-row:last-child{border-bottom:none}
+  .hold-row .hn{flex:1;font-size:14px;font-weight:600}
+  .hold-row .hn small{font-weight:400;color:var(--ink-4);margin-left:5px}
+  .hold-row .hv{text-align:right;font-size:14px;font-weight:600}
+  .hold-row .hv .hq{font-size:11.5px;color:var(--ink-4);font-weight:400}
+  .hold-row .from-ev{font-size:10px;background:var(--teal-bg);color:var(--teal);font-weight:700;border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:1px}
+  .boxes{display:flex;gap:10px;margin-top:14px}
+  .boxcard{flex:1;border:1px solid var(--line-2);border-radius:12px;padding:14px 8px;text-align:center}
+  .boxcard .be{font-size:26px}
+  .boxcard .name{font-size:13px;font-weight:700;margin-top:6px}
+  .boxcard .cnt{font-size:12px;color:var(--ink-3)}
+  .boxcard button{margin-top:8px;width:100%;padding:8px 0;border-radius:8px;border:none;background:var(--navy);color:#fff;font-size:12.5px;font-weight:600}
+  .boxcard button:disabled{background:#f4f4f5;color:var(--ink-4)}
+  .cpn{border:1px solid var(--line-2);border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-top:12px}
+  .cpn .ci{width:40px;height:40px;border-radius:10px;background:var(--amber-bg);display:flex;align-items:center;justify-content:center;font-size:19px}
+  .cpn .cb{flex:1}
+  .cpn .ct{font-size:14px;font-weight:700}
+  .cpn .cs{font-size:12px;color:var(--ink-3);margin-top:1px}
+  .loglist{margin-top:12px;display:flex;flex-direction:column;gap:0}
+  .logrow{font-size:12.5px;color:var(--ink-2);padding:9px 0;border-bottom:1px solid var(--line);display:flex;gap:8px}
+  .logrow:last-child{border-bottom:none}
+  .logrow .lt{color:var(--ink-4);flex-shrink:0}
+
+  /* ── 실험존 ── */
+  .lab-item{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .lab-item:last-child{border-bottom:none}
+
+  /* ── 퀴즈/모달/토스트 ── */
+  .quiz-q{background:#fafafa;border:1px solid var(--line);border-radius:12px;padding:15px;font-size:14.5px;font-weight:600;line-height:1.5;margin-bottom:10px}
+  .quiz-opts{display:flex;flex-direction:column;gap:8px}
+  .opt{border:1px solid var(--line-2);border-radius:10px;padding:13px 15px;font-size:13.5px;color:var(--ink-2);background:#fff;text-align:left;transition:.15s}
+  .opt:hover{border-color:var(--blue)}
+  .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:-90px;background:#18181b;color:#fff;font-size:13px;padding:12px 20px;border-radius:99px;transition:bottom .35s;z-index:70;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+  .toast.show{bottom:88px}
+  .modal-bg{position:fixed;inset:0;background:rgba(9,9,11,.55);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:20px;padding:28px 22px 22px;width:320px;max-width:100%;text-align:center;animation:pop .22s}
+  @keyframes pop{from{transform:scale(.88);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal .big{width:72px;height:72px;border-radius:50%;margin:0 auto;display:flex;align-items:center;justify-content:center;font-size:36px;background:var(--blue-soft)}
+  .modal h3{font-size:16.5px;font-weight:700;margin:13px 0 6px}
+  .modal .amt{font-size:13.5px;color:var(--ink-2);line-height:1.6}
+  .modal .amt b{color:var(--blue)}
+  .modal .mbtns{display:flex;gap:8px;margin-top:18px}
+  .modal .mbtns button{flex:1;height:46px;border:none;border-radius:8px;font-size:14px;font-weight:600}
+  .demo-tag{position:absolute;top:12px;right:12px;background:rgba(9,9,11,.45);border:1px solid rgba(255,255,255,.18);color:#fff;font-size:10.5px;padding:3px 9px;border-radius:20px;z-index:5}
+
+  /* ── 텍스트 인라인 편집 모드 ── */
+  .edit-toggle{border:1px solid var(--line-2);background:#fff;border-radius:8px;font-size:11.5px;padding:5px 10px;color:var(--ink-2);display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+  .edit-toggle.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .edit-reset{border:none;background:none;color:var(--ink-4);font-size:14px;padding:4px 2px}
+  body.edit-mode [data-edit]{outline:1px dashed var(--blue);outline-offset:2px;border-radius:4px;cursor:text}
+  body.edit-mode [data-edit]:hover{background:var(--blue-soft)}
+  body.edit-mode [data-edit]:focus{outline:2px solid var(--blue);background:var(--blue-soft)}
+  .hero [data-edit]{outline-color:rgba(255,255,255,.7) !important}
+  .hero.edit-mode-hint [data-edit]:hover{background:rgba(255,255,255,.15) !important}
+
+  /* ── 등급 진행바 (풀버전 등급전) ── */
+  .grade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .g-cell{border:1px solid var(--line-2);border-radius:12px;padding:14px}
+  .g-label{font-size:11.5px;color:var(--ink-3)}
+  .g-val{font-size:18px;font-weight:800;margin-top:4px;letter-spacing:-.2px}
+  .g-bar{height:5px;background:#f4f4f5;border-radius:99px;margin-top:9px;overflow:hidden}
+  .g-fill{height:100%;background:var(--blue);border-radius:99px;transition:width .3s}
+  .g-next{font-size:11.5px;color:var(--blue);margin-top:7px;line-height:1.45}
+
+  /* ── 선착순 게이지 ── */
+  .fcfs-bar{height:8px;background:#f4f4f5;border-radius:99px;overflow:hidden;margin:14px 0 7px}
+  .fcfs-fill{height:100%;background:var(--red);border-radius:99px;transition:width .3s}
+  .fcfs-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-3)}
+  .fcfs-row b{color:var(--red);font-weight:700}
+
+  /* ── 출석 스탬프 ── */
+  .stamps{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-top:14px}
+  .stamp{aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:600;border:1px dashed var(--line-2);color:var(--ink-4);position:relative}
+  .stamp.on{background:var(--blue);border:none;color:#fff}
+  .stamp.today{border:1.5px solid var(--blue);color:var(--blue)}
+  .stamp.bonus::after{content:"🎁";position:absolute;top:-8px;right:-4px;font-size:11px}
+
+  /* ── 진행 일정 타임라인 ── */
+  .tl{margin-top:14px}
+  .tl-item{display:flex;gap:13px}
+  .tl-rail{display:flex;flex-direction:column;align-items:center;width:11px;flex-shrink:0}
+  .tl-dot{width:9px;height:9px;border-radius:50%;background:var(--line-2);margin-top:5px;flex-shrink:0}
+  .tl-dot.on{background:var(--blue)}
+  .tl-line{width:1.5px;flex:1;background:var(--line);min-height:22px}
+  .tl-body{padding-bottom:15px}
+  .tl-t{font-size:14px;font-weight:600;color:var(--ink)}
+  .tl-d{font-size:12.5px;color:var(--ink-3);margin-top:3px;line-height:1.5}
+
+  /* ── 꼭 알아두세요 리스트 (공용) ── */
+  .klist{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:10px}
+  .klist li{display:flex;gap:9px;font-size:13.5px;color:var(--ink-2);line-height:1.55}
+  .klist li::before{content:"✓";flex-shrink:0;width:18px;height:18px;border-radius:50%;background:var(--teal-bg);color:var(--teal);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+  /* ── 섹션 구분 라벨 (상시 허브 vs 이벤트) ── */
+  .section-label{font-size:12px;font-weight:700;color:var(--ink-3);margin:8px 6px 2px;display:flex;align-items:center;gap:7px}
+  .section-label .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+  /* ── 상시 리워드 허브 헤더 카드 (비현금성 = 네이비/퍼플 톤) ── */
+  .hub-card{background:linear-gradient(140deg,#1b2547,#0f1830);border-radius:16px;padding:18px;color:#fff}
+  .hub-top{display:flex;align-items:center;justify-content:space-between}
+  .hub-tier{display:flex;align-items:center;gap:10px}
+  .hub-tier .tb{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .hub-tier .tt{font-size:15px;font-weight:700}
+  .hub-tier .td{font-size:11.5px;color:rgba(255,255,255,.6);margin-top:1px}
+  .streak-pill{background:rgba(255,255,255,.13);border-radius:99px;font-size:12.5px;font-weight:700;padding:7px 13px;white-space:nowrap}
+  .hub-prog-label{display:flex;justify-content:space-between;font-size:11.5px;color:rgba(255,255,255,.72);margin:15px 0 6px}
+  .hub-prog{height:6px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden}
+  .hub-prog-fill{height:100%;background:linear-gradient(90deg,#6d8ffa,#a78bfa);border-radius:99px;transition:width .35s}
+  .hub-pts{display:flex;align-items:center;justify-content:space-between;margin-top:15px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
+  .hub-pts .pv{font-size:21px;font-weight:800}
+  .hub-pts .pl{font-size:11.5px;color:rgba(255,255,255,.6);margin-top:1px}
+  .hub-pts .noncash{font-size:10px;background:rgba(255,255,255,.14);border-radius:5px;padding:2px 7px;margin-left:7px;vertical-align:2px;font-weight:600}
+  .hub-pts .wbtn{background:rgba(255,255,255,.14);border:none;color:#fff;border-radius:8px;font-size:12.5px;font-weight:600;padding:9px 14px}
+
+  /* ── 이중 트랙 토글 ── */
+  .track-toggle{display:flex;border:1px solid var(--line-2);border-radius:10px;overflow:hidden;margin-top:2px}
+  .track-toggle button{flex:1;border:none;background:#fff;padding:9px 0;font-size:12.5px;font-weight:600;color:var(--ink-3)}
+  .track-toggle button.on{background:var(--blue-soft);color:var(--blue)}
+
+  /* ── 티어 혜택 리스트 ── */
+  .tier-benefits{margin-top:6px;display:flex;flex-direction:column;gap:9px}
+  .tb-row{display:flex;align-items:center;gap:10px;font-size:13px}
+  .tb-row .ic{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+  .tb-row.unlocked{color:var(--ink)} .tb-row.unlocked .ic{background:var(--teal-bg);color:var(--teal)}
+  .tb-row.locked{color:var(--ink-4)} .tb-row.locked .ic{background:#f4f4f5;color:var(--ink-4)}
+  .tb-row .tn{flex:1} .tb-row .tg{font-size:11px;color:var(--ink-4)}
+
+  /* ── 온보딩 스테이지 게이트 (스킴1 · 신규 트랙) ── */
+  .ob-prog{height:6px;background:#f4f4f5;border-radius:99px;overflow:hidden;margin:12px 0 4px}
+  .ob-prog-fill{height:100%;background:linear-gradient(90deg,#2f6fe8,#7c3aed);border-radius:99px;transition:width .35s}
+  .ob-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+  .ob-row:last-child{border-bottom:none;padding-bottom:2px}
+  .ob-check{width:26px;height:26px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+  .ob-check.done{background:var(--teal-bg);color:var(--teal)}
+  .ob-check.todo{background:#fff;color:var(--ink-4);border:1.5px dashed var(--line-2)}
+  .ob-body{flex:1;min-width:0}
+  .ob-t{font-size:14.5px;font-weight:600}
+  .ob-t.done{color:var(--ink-3)}
+  .ob-d{font-size:12px;color:var(--purple);font-weight:600;margin-top:2px}
+  .ob-d .box{color:var(--amber)}
+
+  /* ── 포인트 지갑 사용처 ── */
+  .use-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .use-cell{border:1px solid var(--line-2);border-radius:12px;padding:14px}
+  .use-cell .ue{font-size:22px}
+  .use-cell .un{font-size:13.5px;font-weight:700;margin-top:6px}
+  .use-cell .up{font-size:12px;color:var(--purple);font-weight:700;margin-top:3px}
+  .use-cell .ud{font-size:11px;color:var(--ink-4);margin-top:3px;line-height:1.4}
+  .use-cell button{margin-top:10px;width:100%;padding:8px 0;border-radius:8px;border:none;font-size:12px;font-weight:600;background:var(--purple);color:#fff}
+  .use-cell button:disabled{background:#f4f4f5;color:var(--ink-4)}
+  .ledger{margin-top:14px}
+  .led-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line)}
+  .led-row:last-child{border-bottom:none}
+  .led-row .ld{font-size:12.5px;color:var(--ink-2)}
+  .led-row .lt{font-size:11px;color:var(--ink-4);margin-top:1px}
+  .led-row .lv{font-size:13px;font-weight:700}
+  .led-row .lv.plus{color:var(--teal)} .led-row .lv.minus{color:var(--ink-3)}
+
+  /* ── 어드민 · 홀드아웃 데모 대시보드 (경영진용 · 내부) ── */
+  .admin-badge{display:inline-block;background:#1e293b;color:#fff;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:6px;letter-spacing:.3px;vertical-align:2px}
+  .admin-topnote{background:#f8fafc;border:1px solid var(--line-2);border-radius:12px;padding:12px 14px;font-size:12px;color:var(--ink-3);line-height:1.65}
+  .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+  .kpi-cell{border:1px solid var(--line-2);border-radius:12px;padding:14px}
+  .kpi-cell .kl{font-size:11.5px;color:var(--ink-3)}
+  .kpi-cell .kv{font-size:20px;font-weight:800;margin-top:5px;letter-spacing:-.2px}
+  .kpi-cell .kt{font-size:11px;color:var(--ink-4);margin-top:3px}
+  .kpi-pass{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;margin-top:7px}
+  .kpi-pass.ok{background:var(--teal-bg);color:var(--teal)}
+  .kpi-pass.warn{background:var(--amber-bg);color:var(--amber)}
+  .kpi-src{font-size:10px;color:var(--ink-4);margin-top:5px}
+
+  .holdout-bars{display:flex;align-items:flex-end;gap:24px;height:130px;margin:16px 0 4px;padding:0 10px}
+  .hb-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .hb-bar{width:100%;max-width:68px;border-radius:8px 8px 0 0;transition:height .4s}
+  .hb-val{font-size:14px;font-weight:800;margin-bottom:6px}
+  .hb-label{font-size:11.5px;color:var(--ink-3);margin-top:9px;text-align:center;line-height:1.4}
+  .holdout-gap{text-align:center;font-size:13.5px;font-weight:700;margin-top:6px}
+
+  .mission-op-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .mission-op-row:last-child{border-bottom:none}
+  .mop-body{flex:1;min-width:0}
+  .mop-t{font-size:13.5px;font-weight:600}
+  .mop-t.off{color:var(--ink-4);text-decoration:line-through}
+  .mop-bar{height:5px;background:#f4f4f5;border-radius:99px;margin-top:6px;overflow:hidden}
+  .mop-fill{height:100%;border-radius:99px}
+  .mop-meta{font-size:11px;color:var(--ink-4);margin-top:4px}
+  .switch{width:38px;height:22px;border-radius:99px;background:var(--line-2);position:relative;flex-shrink:0;border:none;cursor:pointer}
+  .switch::after{content:'';width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .switch.on{background:var(--teal)}
+  .switch.on::after{left:18px}
+
+  .anomaly-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .anomaly-row:last-child{border-bottom:none}
+  .anomaly-sev{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .anomaly-body{flex:1;min-width:0}
+  .anomaly-t{font-size:13px;font-weight:600}
+  .anomaly-d{font-size:11.5px;color:var(--ink-4);margin-top:2px}
+  .anomaly-actions{display:flex;gap:6px;flex-shrink:0}
+  .anomaly-actions button{font-size:11.5px;font-weight:600;padding:6px 10px;border-radius:7px;border:none}
+
+  .check-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .check-row:last-child{border-bottom:none}
+  .check-box{width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line-2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer}
+  .check-box.on{background:var(--teal);border-color:var(--teal);color:#fff}
+
+  .issue-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}
+  .issue-row:last-child{border-bottom:none}
+  .issue-t{flex:1;font-size:13px;font-weight:600}
+  .issue-tag{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:99px;flex-shrink:0}
+  .issue-tag.warn{background:var(--amber-bg);color:var(--amber)}
+  .issue-tag.info{background:var(--blue-soft);color:var(--blue)}
+  .issue-tag.danger{background:var(--red-soft);color:var(--red)}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="in">
+    <div class="brand"><span class="logo" onclick="go('home')">UPbit</span><span class="svc" id="scrTitle">홈</span></div>
+    <div class="top-right" style="display:flex;align-items:center;gap:6px">
+      <button class="edit-toggle" onclick="go('admin')" title="경영진 데모용 운영·홀드아웃 대시보드">📊 운영 데모</button>
+      <button class="edit-toggle" id="editToggle" onclick="toggleEditMode()">✏️ 텍스트 편집</button>
+      <button class="edit-reset" onclick="resetEdits()" title="편집한 텍스트 초기화">↺</button>
+    </div>
+  </div>
+</header>
+<div class="guide"><div class="in" id="guideBar"></div></div>
+
+<!-- ═══════════ 1. 홈 ═══════════ -->
+<section class="screen active" id="scr-home">
+  <div class="col pad">
+    <div class="banner bn-ev3" onclick="dataEditClick(event,'benefit')">
+      <div class="bt" data-edit="home.banner.eyebrow">UPBIT 멀티토큰 챌린지 · NEW</div>
+      <h3 data-edit="home.banner.title">다른 거래소의 토큰, 업비트로 옮기면 랜덤박스</h3>
+      <span class="go">혜택 탭에서 확인 ›</span>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="go('benefit')">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:11px;background:var(--purple-bg);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0">🎯</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14.5px;font-weight:700">오늘의 미션 <span id="homeHubLeft" style="color:var(--purple)">4</span>개 남음</div>
+          <div style="font-size:12px;color:var(--ink-3);margin-top:2px">🔥 <span id="homeStreak">4</span>일 연속 방문 · <span id="homeTier">애널리스트</span> 티어</div>
+        </div>
+        <span style="color:var(--ink-4)">›</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="asset-sum">
+        <div><div class="l">보유 KRW</div><div class="v" id="homeKrw">5,000,000 KRW</div></div>
+        <button class="btn btn-line btn-sm" onclick="go('my')">내 보유자산</button>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer" onclick="openMarketBrief()">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:11px;background:var(--blue-soft);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0">📊</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14.5px;font-weight:700">오늘의 시황 브리핑</div>
+          <div style="font-size:12px;color:var(--ink-3);margin-top:2px">UBCI 9,720.3 <span class="c-up">+0.42%</span> · 상승 주도 AVAX·NEAR</div>
+        </div>
+        <span style="color:var(--ink-4)">›</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>디지털 자산 시세 <span class="sub">원화마켓 · ☆ 눌러 알림</span></h2>
+      <div id="mktList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 2. 거래소 ═══════════ -->
+<section class="screen" id="scr-exchange">
+  <div class="col pad">
+    <div class="card">
+      <h2>매수 주문 <span class="sub">원화마켓 · 모의 체결</span></h2>
+      <div class="seg" id="exSeg"></div>
+      <div class="field">
+        <div class="fl">주문 금액</div>
+        <div class="amounts" id="exAmts"></div>
+      </div>
+      <div class="fee-row"><span>거래 수수료 (0.05%)</span><span id="feeView"></span></div>
+      <div class="fee-row"><span>총 결제 금액</span><b id="totalView"></b></div>
+      <div id="feeCpnRow" style="display:none" class="callout">🎟 <b>수수료 50% 쿠폰</b>이 적용 중이에요 — 보상 사용의 마지막 단계!</div>
+      <button class="btn btn-blue btn-full" style="margin-top:16px" onclick="buy()">매수하기</button>
+      <p class="foot-note">체결 즉시 보유자산에 반영되고, 참여 중인 이벤트의 거래 미션·등급전 실적으로 자동 집계돼요.</p>
+    </div>
+    <div class="card" id="exMissionHint"></div>
+  </div>
+</section>
+
+<!-- ═══════════ 3. 입출금 ═══════════ -->
+<section class="screen" id="scr-deposit">
+  <div class="col pad">
+    <div class="card">
+      <h2>입출금 <span class="sub">순입금 시뮬레이션</span></h2>
+      <div class="seg" id="dpSeg"></div>
+      <div class="field">
+        <div class="fl">입금 방식 — 순입금 인정 여부를 테스트해 보세요</div>
+        <button class="btn btn-blue btn-full" onclick="extDeposit(600000)" style="margin-top:4px">외부 지갑에서 입금 (+60만 원 상당)</button>
+        <button class="btn btn-line btn-full" onclick="extDeposit(2000000)" style="margin-top:8px">타 거래소에서 입금 (+200만 원 상당)</button>
+        <button class="btn btn-gray btn-full" style="margin-top:8px;cursor:pointer;color:var(--ink-3)" onclick="internalMove()">내 계정 간 이동 (순입금 미인정)</button>
+        <button class="btn btn-gray btn-full" style="margin-top:8px;cursor:pointer;color:var(--red)" onclick="withdrawOut()">외부로 출금 (−50만 원 · 순입금 차감)</button>
+      </div>
+      <div class="callout" id="netView"></div>
+      <p class="foot-note">순입금 = 외부 입금 − 외부 출금. 내부 이동은 집계에서 제외돼요. 이벤트 종료 시점까지 잔고를 유지해야 등급으로 인정됩니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 4. 혜택 탭 ═══════════ -->
+<section class="screen" id="scr-benefit">
+  <div class="col pad">
+
+    <!-- ── 상시 리워드 허브 (인프라 레이어) ── -->
+    <div class="section-label"><span class="dot" style="background:var(--purple)"></span>상시 리워드 허브 · 매일 갱신</div>
+    <div class="hub-card">
+      <div class="hub-top">
+        <div class="hub-tier">
+          <div class="tb" id="hubTierIcon">📘</div>
+          <div><div class="tt" id="hubTierName">애널리스트</div><div class="td" id="hubTierBenefit">신규 상장 알림 우선 수신</div></div>
+        </div>
+        <div class="streak-pill">🔥 <span id="hubStreak">4</span>일 연속</div>
+      </div>
+      <div class="hub-prog-label"><span>다음 티어까지</span><span id="hubTierNext">-</span></div>
+      <div class="hub-prog"><div class="hub-prog-fill" id="hubProgFill" style="width:0%"></div></div>
+      <div class="hub-pts">
+        <div><div class="pv"><span id="hubPoints">0</span> P<span class="noncash">비현금성</span></div><div class="pl">원화 환급 불가 · 쿠폰·응모·기능에 사용</div></div>
+        <button class="wbtn" onclick="go('my')">지갑 ›</button>
+      </div>
+    </div>
+
+    <div class="card" id="onboardCard" style="display:none">
+      <h2><span data-edit="hub.h.onboard">신규 웰컴 온보딩</span> <span class="chiptag tag-new">스킴1</span></h2>
+      <p class="msub" style="margin-top:6px" data-edit="hub.onboardNote">가입·KYC를 마쳤어요. 계좌 연동 → 첫 입금 → 첫 거래까지 완주하면 <b>웰컴 플래티넘 박스</b>를 드려요.</p>
+      <div class="ob-prog"><div class="ob-prog-fill" id="obProgFill" style="width:0%"></div></div>
+      <div style="font-size:11.5px;color:var(--ink-4);text-align:right" id="obProgLabel">0/5 단계</div>
+      <div id="obStages" style="margin-top:6px"></div>
+      <div class="callout" data-edit="hub.onboardSynergy">💡 첫 입금·첫 거래는 <b>온보딩 포인트</b>와 진행 중인 <b>이벤트 랜덤박스</b>를 한 번에 달성해요.</div>
+    </div>
+
+    <div class="card">
+      <h2><span data-edit="hub.h.mission">오늘의 미션</span> <span class="sub" id="hubMissionCnt">0/4 완료</span></h2>
+      <div class="track-toggle" id="trackToggle"></div>
+      <div id="hubMissions" style="margin-top:8px"></div>
+      <p class="foot-note" data-edit="hub.missionNote">정보·시장 행동 중심 미션이 매일 갱신돼요. 완료 시 비현금성 포인트가 적립되고, 연속 방문이 스트릭으로 쌓입니다.</p>
+    </div>
+
+    <div class="card">
+      <h2><span data-edit="hub.h.tier">내 티어 혜택</span> <span class="sub">비금전 지위 · 정보 접근권</span></h2>
+      <div class="tier-benefits" id="tierBenefits"></div>
+    </div>
+
+    <!-- ── 진행 중 이벤트 (기간 한정 · 별도 분리) ── -->
+    <div class="section-label"><span class="dot" style="background:var(--blue)"></span>진행 중 이벤트 · 기간 한정</div>
+    <div class="card">
+      <div class="ev-item" onclick="dataEditClick(event,'ev3')">
+        <div class="ev-thumb" style="background:linear-gradient(135deg,#0f766e,#14b8a6)">🪙</div>
+        <div class="ev-body">
+          <div class="ev-t"><span data-edit="benefit.ev3.title">멀티토큰 잔고 이전 챌린지</span> <span class="chiptag tag-live">진행중</span></div>
+          <div class="ev-s" data-edit="benefit.ev3.sub">피처 토큰 옮기고 랜덤박스 받기 · 스킴3</div>
+        </div>
+      </div>
+      <div class="ev-item" onclick="dataEditClick(event,'ev2')">
+        <div class="ev-thumb" style="background:linear-gradient(135deg,#0d2f74,#2f6fe8)">📦</div>
+        <div class="ev-body">
+          <div class="ev-t"><span data-edit="benefit.ev2.title">잔고 대이동 챌린지</span> <span class="chiptag tag-live">진행중</span></div>
+          <div class="ev-s" data-edit="benefit.ev2.sub">거래·순입금 미션 참여 후 랜덤박스 받기 · 스킴2</div>
+        </div>
+      </div>
+      <div class="ev-item end">
+        <div class="ev-thumb" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">◎</div>
+        <div class="ev-body">
+          <div class="ev-t"><span data-edit="benefit.order.title">오덜리(ORDER) 5일 챌린지</span> <span class="chiptag tag-end">종료</span></div>
+          <div class="ev-s" data-edit="benefit.order.sub">미션 참여 후 랜덤 박스 받기 · 1차 검증 완료</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2><span data-edit="lab.heading">리워드 실험실</span> <span class="chiptag tag-lab">신규 기능 테스트존</span></h2>
+      <div id="labList"></div>
+      <p class="foot-note">상시 허브·이벤트에 아직 없는 신규 리워드 기능을 이 영역에서 먼저 테스트해요. 코드의 LAB_FEATURES 배열에 항목을 추가하면 자동으로 나타납니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 5. 이벤트 상세: 스킴3 멀티토큰 ═══════════ -->
+<section class="screen" id="scr-ev3">
+  <div class="col">
+    <div class="hero hero-ev3">
+      <div class="demo-tag">스킴3 목업</div>
+      <button class="back" onclick="go('benefit')">‹ 혜택</button>
+      <span class="xbadge" data-edit="ev3.heroBadge">UPBIT 멀티토큰 챌린지</span>
+      <h1 data-edit="ev3.heroTitle">멀티토큰 잔고 이전 챌린지</h1>
+      <p class="dates" data-edit="ev3.heroDates">2026.07.01 10:00 - 2026.07.14 23:59</p>
+      <div class="coins3">
+        <div class="cc" style="background:#e84142">A</div>
+        <div class="cc" style="background:#00c08b">N</div>
+        <div class="cc" style="background:#2b2d31">P</div>
+      </div>
+      <div class="ticker" id="ev3Ticker">박**님이 <b>AVAX 순입금 미션</b>을 달성했어요.</div>
+    </div>
+    <div class="sheet">
+      <div class="card" id="ev3JoinCard">
+        <h2 data-edit="ev3.h.join">이벤트 참여</h2>
+        <p class="msub" style="margin-top:8px">참여 버튼을 먼저 눌러야 이후 실적이 집계돼요. (실제 미션모듈 규칙과 동일)</p>
+        <button class="btn btn-blue btn-full" style="margin-top:14px" id="ev3JoinBtn" onclick="joinEv3()">이벤트 참여하기</button>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev3.h.token">피처 토큰 선택</span> <span class="sub">토큰별 미션이 각각 진행돼요</span></h2>
+        <div class="ttabs" id="ttabs"></div>
+        <div class="tk-stat">
+          <div class="tk-cell"><div class="l">내 순입금</div><div class="v" id="tkNet">0원</div></div>
+          <div class="tk-cell"><div class="l">예상 등급</div><div class="v" id="tkGrade">-</div></div>
+          <div class="tk-cell"><div class="l">선착순 잔여</div><div class="v" id="tkFcfs" style="color:var(--red)">122명</div></div>
+        </div>
+        <div id="tkMissions"></div>
+        <div class="warn">순입금 등급은 이벤트 <b>종료 후 정산</b>으로 확정돼요. 표시는 어제 자정 기준 예상치입니다.</div>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev3.h.combo">크로스토큰 콤보</span> <span class="sub">2종 이상 참여 시</span></h2>
+        <div class="combo-dots" id="comboDots"></div>
+        <div class="callout" id="comboMsg">피처 토큰 <b>2종 이상</b>에서 순입금 또는 거래 미션을 달성하면 정산 때 <b>플래티넘 콤보 박스</b> 자격이 생겨요.</div>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev3.h.retro">소급 에어드랍</span> <span class="sub">이벤트 전 홀더 감사 보상</span></h2>
+        <p class="msub" style="margin-top:8px" data-edit="ev3.retroSub">6월 한 달간 피처 토큰을 보유·순입금했던 회원에게 소급 보상을 드려요. 대상 여부를 확인해 보세요.</p>
+        <button class="btn btn-line btn-full" style="margin-top:14px" id="retroBtn" onclick="checkRetro()">소급 대상 확인하기</button>
+      </div>
+
+      <div class="card know">
+        <h2 data-edit="ev3.h.know">꼭 알아두세요!</h2>
+        <ul class="klist">
+          <li data-edit="ev3.know1">순입금은 외부 입금 − 외부 출금 기준이에요. 내부 이동, 입금 후 곧바로 출금한 금액은 제외됩니다.</li>
+          <li data-edit="ev3.know2">모든 미션은 참여 버튼을 먼저 클릭한 후 조건을 달성해야 인정돼요.</li>
+          <li data-edit="ev3.know3">1인 1계정(KYC 기준) 참여, 부정 참여 적발 시 보상이 회수될 수 있어요.</li>
+          <li data-edit="ev3.know4">랜덤박스 및 보상 수량 소진 시 각 미션이 조기 종료될 수 있습니다.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 6. 이벤트 상세: 스킴2 (풀버전) ═══════════ -->
+<section class="screen" id="scr-ev2">
+  <div class="col">
+    <div class="hero hero-ev2">
+      <div class="demo-tag">스킴2 목업 · 풀버전</div>
+      <button class="back" onclick="go('benefit')">‹ 혜택</button>
+      <span class="xbadge" data-edit="ev2.heroBadge">UPBIT 미션 이벤트</span>
+      <h1 data-edit="ev2.heroTitle">잔고 대이동 챌린지</h1>
+      <p class="dates" data-edit="ev2.heroDates">2026.07.01 10:00 - 2026.07.14 23:59</p>
+      <div class="ticker" id="ev2Ticker">김**님이 <b>골드 랜덤박스</b>를 받았어요.</div>
+    </div>
+    <div class="sheet">
+
+      <div class="card">
+        <h2><span data-edit="ev2.h.mission">전체 미션</span> <span class="sub">달성 즉시 보상 · 1회</span></h2>
+        <div class="mrow">
+          <div class="micon" style="background:var(--teal-bg);color:var(--teal)">?</div>
+          <div class="mbody"><div class="mtitle" data-edit="ev2.m.quiz.title">오늘의 퀴즈</div><div class="msub" data-edit="ev2.m.quiz.sub">매일 1문제 완료하고 브론즈 랜덤박스 받아가세요!</div></div>
+          <div class="mstate"><button class="chip chip-line" id="ev2QuizBtn" onclick="ev2Quiz()">풀기</button></div>
+        </div>
+        <div class="mrow">
+          <div class="micon" style="background:var(--blue-soft);color:var(--blue)">⇄</div>
+          <div class="mbody"><div class="mtitle" data-edit="ev2.m.trade.title">거래 미션</div><div class="msub" data-edit="ev2.m.trade.sub">원화마켓에서 10만 원 이상 거래하기 (어느 자산이든)</div></div>
+          <div class="mstate"><button class="chip chip-go" id="ev2TradeBtn" onclick="go('exchange')">거래하러 가기</button></div>
+        </div>
+        <div class="mrow">
+          <div class="micon" style="background:var(--amber-bg);color:var(--amber)">↓</div>
+          <div class="mbody"><div class="mtitle" data-edit="ev2.m.dep.title">입금 미션</div><div class="msub" data-edit="ev2.m.dep.sub">외부에서 50만 원 이상 순입금하기</div></div>
+          <div class="mstate"><button class="chip chip-go" id="ev2DepBtn" onclick="go('deposit')">입금하러 가기</button></div>
+        </div>
+        <div class="mrow">
+          <div class="micon" style="background:var(--purple-bg);color:var(--purple)">✓</div>
+          <div class="mbody"><div class="mtitle" data-edit="ev2.m.att.title">출석 미션</div><div class="msub" data-edit="ev2.m.att.sub">매일 출석 도장을 모으세요. 14일차 피날레 박스!</div></div>
+          <div class="mstate"><button class="chip chip-go" id="ev2AttendBtn" onclick="ev2Attend()">출석</button></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev2.h.fcfs">선착순 골드+ 랜덤박스</span> <span class="sub">순입금 50만 원 달성 선착순</span></h2>
+        <div class="fcfs-bar"><div class="fcfs-fill" id="ev2FcfsFill"></div></div>
+        <div class="fcfs-row"><span>선착순 500명</span><b id="ev2FcfsLeft">잔여 188명</b></div>
+        <div class="callout" data-edit="ev2.fcfsNote">선착순이 마감되어도 기간 내 달성자 <b>전원</b>이 등급 보상을 받고, 종료 후 <b>추첨</b>으로 플래티넘 랜덤박스 기회가 한 번 더 있어요.</div>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev2.h.grade">내 예상 등급</span> <span class="sub">어제 자정 기준</span></h2>
+        <div class="grade-grid">
+          <div class="g-cell">
+            <div class="g-label">거래 등급전</div>
+            <div class="g-val" id="ev2GVal" style="color:var(--ink-4)">미참여</div>
+            <div class="g-bar"><div class="g-fill" id="ev2GBar" style="width:0%"></div></div>
+            <div class="g-next" id="ev2GNext"></div>
+          </div>
+          <div class="g-cell">
+            <div class="g-label">순입금 등급전</div>
+            <div class="g-val" id="ev2NVal" style="color:var(--ink-4)">미참여</div>
+            <div class="g-bar"><div class="g-fill" id="ev2NBar" style="width:0%"></div></div>
+            <div class="g-next" id="ev2NNext"></div>
+          </div>
+        </div>
+        <div class="warn" data-edit="ev2.gradeNote">등급은 이벤트 기간 <b>전체 누적 실적</b>으로 종료 후 확정돼요. 표시는 예상치이며, 등급 보상은 <b>7.15 ~ 7.21 정산 후 일괄 지급</b>됩니다.</div>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev2.h.stamp">출석 스탬프</span> <span class="sub" id="ev2StampCnt">0 / 14일</span></h2>
+        <div class="stamps" id="ev2StampGrid"></div>
+        <p class="foot-note" data-edit="ev2.stampNote">3·7·14일차에 보너스 박스 🎁 · 마지막 날 피날레 박스는 출석 10일 이상 달성자에게 드려요.</p>
+      </div>
+
+      <div class="card">
+        <h2><span data-edit="ev2.h.box">내 랜덤박스</span></h2>
+        <p class="msub" style="margin-top:6px" data-edit="ev2.boxNote">이번 이벤트로 모은 박스는 <b>마이 탭 보관함</b>에서 한 번에 열 수 있어요.</p>
+        <button class="btn btn-line btn-full" style="margin-top:12px" onclick="go('my')">보관함 바로가기</button>
+      </div>
+
+      <div class="card">
+        <h2 data-edit="ev2.h.sched">진행 일정</h2>
+        <div class="tl">
+          <div class="tl-item">
+            <div class="tl-rail"><div class="tl-dot on"></div><div class="tl-line"></div></div>
+            <div class="tl-body"><div class="tl-t" data-edit="ev2.sched1t">7.1 ~ 7.14 · 이벤트 기간</div><div class="tl-d" data-edit="ev2.sched1d">미션 달성 보상은 즉시, 등급전 실적은 계속 누적돼요</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-rail"><div class="tl-dot"></div><div class="tl-line"></div></div>
+            <div class="tl-body"><div class="tl-t" data-edit="ev2.sched2t">7.15 ~ 7.16 · 정산 및 검증</div><div class="tl-d" data-edit="ev2.sched2d">누적 실적으로 등급 확정 · 순입금 유지 여부 확인</div></div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-rail"><div class="tl-dot"></div></div>
+            <div class="tl-body"><div class="tl-t" data-edit="ev2.sched3t">7.17 ~ 7.21 · 등급 보상 + 추첨 지급</div><div class="tl-d" data-edit="ev2.sched3d">등급별 랜덤박스 일괄 지급 · 플래티넘 추첨 발표</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card know">
+        <h2 data-edit="ev2.h.know">꼭 알아두세요!</h2>
+        <ul class="klist">
+          <li data-edit="ev2.know1">순입금은 외부 입금 − 외부 출금 기준이에요. 내부 이동, 입금 후 곧바로 출금한 금액은 제외됩니다.</li>
+          <li data-edit="ev2.know2">모든 미션은 참여 버튼을 먼저 클릭한 후 조건을 달성해야 인정돼요.</li>
+          <li data-edit="ev2.know3">1인 1계정(KYC 기준) 참여, 부정 참여 적발 시 보상이 회수될 수 있어요.</li>
+          <li data-edit="ev2.know4">랜덤박스 및 보상 수량 소진 시 각 미션이 조기 종료될 수 있습니다.</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 7. 마이 (보상함·보유자산) ═══════════ -->
+<section class="screen" id="scr-my">
+  <div class="col pad">
+    <div class="card">
+      <h2>보유 자산 <span class="sub">모의 잔고</span></h2>
+      <div class="asset-sum" style="margin-top:6px">
+        <div><div class="l" style="font-size:12px;color:var(--ink-3)">총 보유</div><div class="v" id="myTotal">-</div></div>
+      </div>
+      <div id="holdList" style="margin-top:10px"></div>
+      <p class="foot-note"><span class="from-ev" style="margin-left:0">이벤트</span> 표시는 랜덤박스·보상으로 받은 자산이에요.</p>
+    </div>
+
+    <div class="card">
+      <h2>내 랜덤박스 <span class="sub" id="boxTotal">보유 0개</span></h2>
+      <div class="boxes" id="boxList"></div>
+      <p class="foot-note">모든 랜덤박스는 꽝 없음 — 열면 즉시 보유자산에 입금돼요. 골드·플래티넘은 정산(7.15) 후 지급됩니다.</p>
+    </div>
+
+    <div class="card">
+      <h2>포인트 지갑 <span class="sub">비현금성 · 원화 환급 불가</span></h2>
+      <div style="display:flex;align-items:flex-end;gap:10px;margin-top:8px">
+        <div style="font-size:28px;font-weight:800;color:var(--purple)"><span id="walletPoints">0</span> P</div>
+        <div style="font-size:12px;color:var(--ink-4);padding-bottom:5px">이번 달 <b id="walletExpire" style="color:var(--amber)">0</b>P 소멸 예정</div>
+      </div>
+      <div class="use-grid" id="useGrid"></div>
+      <div class="ledger" id="ledger"></div>
+      <p class="foot-note">적립은 상시 허브의 정보·성과형 미션에서, 사용은 아래 4개 사용처에서. 원화 환급·가상자산 교환은 규제상 지원하지 않아요(비현금성).</p>
+    </div>
+
+    <div class="card">
+      <h2>내 쿠폰 · 응모권 <span class="sub">이벤트·포인트 사용처</span></h2>
+      <div class="cpn" id="cpnCard">
+        <div class="ci">🎟</div>
+        <div class="cb"><div class="ct">거래 수수료 쿠폰</div><div class="cs" id="cpnState">거래 미션 보상 · 미사용</div></div>
+        <button class="chip chip-go" id="cpnBtn" onclick="useCoupon()">사용하기</button>
+      </div>
+      <div class="cpn">
+        <div class="ci" style="background:var(--blue-soft)">🎫</div>
+        <div class="cb"><div class="ct">추첨 응모권 <span id="myTickets">0</span>장</div><div class="cs">이벤트 종료 후 플래티넘 추첨에 자동 응모</div></div>
+      </div>
+      <div class="cpn" id="premiumCpn" style="display:none">
+        <div class="ci" style="background:var(--teal-bg)">📈</div>
+        <div class="cb"><div class="ct">프리미엄 리서치</div><div class="cs" id="premiumState">이용 중 · 30일</div></div>
+        <button class="chip chip-done">이용 중</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>보상 히스토리 <span class="sub">이번 세션 기록</span></h2>
+      <div class="loglist" id="logList"><div class="logrow"><span class="lt">-</span>아직 기록이 없어요. 이벤트에 참여해 보세요!</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ 8. 운영·홀드아웃 대시보드 (경영진 데모 · 내부용) ═══════════ -->
+<section class="screen" id="scr-admin">
+  <div class="col pad">
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <h2 style="margin:0">Growth 운영 대시보드 <span class="admin-badge">내부용</span></h2>
+        <button class="btn btn-line btn-sm" onclick="go('home')">사용자 화면 ›</button>
+      </div>
+      <p class="admin-topnote" style="margin-top:10px">경영진 확인용 데모입니다. <b>포인트 사용률</b>은 이 세션에서 실제 조작한 값을 반영하고, 나머지 지표는 <b>가정 시나리오</b>입니다. 판단 원칙 — "얼마나 뿌렸나"가 아니라 <b>"얼마나 자주 다시 오게 했나."</b></p>
+    </div>
+
+    <div class="card">
+      <h2>Phase 1 성공 기준 <span class="sub">컷라인 대비</span></h2>
+      <div class="kpi-grid" id="kpiGrid"></div>
+    </div>
+
+    <div class="card">
+      <h2>홀드아웃 A/B 실험 <span class="sub">허브 코호트 vs 대조군</span></h2>
+      <p class="msub" style="margin-top:4px">인게이지먼트→매출은 가정이 아니라 대조군으로 증명할 가설로 관리합니다.</p>
+      <div class="holdout-bars" id="holdoutBars"></div>
+      <div class="holdout-gap" id="holdoutGap"></div>
+      <button class="btn btn-line btn-full" style="margin-top:14px" onclick="runHoldout()">시뮬레이션 다시 실행</button>
+      <div class="warn" style="margin-top:12px" id="killCriterion"></div>
+    </div>
+
+    <div class="card">
+      <h2>미션 운영 (CRUD) <span class="sub">예산·소진율 관리</span></h2>
+      <div id="missionOps"></div>
+      <p class="foot-note">토글을 끄면 사용자 화면(혜택 탭 → 상시 허브)에서 해당 미션이 즉시 사라져요 — 혜택 탭에서 바로 확인해 보세요.</p>
+    </div>
+
+    <div class="card">
+      <h2>어뷰징 가드레일 <span class="sub">이상탐지 큐</span></h2>
+      <div id="anomalyList"></div>
+    </div>
+
+    <div class="card">
+      <h2>CFO 승인 체크리스트 <span class="sub">착수 전 확인</span></h2>
+      <div id="cfoChecklist"></div>
+    </div>
+
+    <div class="card">
+      <h2>최대 쟁점 3</h2>
+      <div id="issueList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 하단 탭바 -->
+<nav class="tabbar"><div class="in">
+  <button class="tab on" id="tab-home" onclick="go('home')"><span class="ti">🏠</span>홈</button>
+  <button class="tab" id="tab-exchange" onclick="go('exchange')"><span class="ti">📊</span>거래소</button>
+  <button class="tab" id="tab-deposit" onclick="go('deposit')"><span class="ti">↕️</span>입출금</button>
+  <button class="tab" id="tab-benefit" onclick="go('benefit')"><span class="ti">🎁</span>혜택<span class="bdg" id="benefitBdg"></span></button>
+  <button class="tab" id="tab-my" onclick="go('my')"><span class="ti">👤</span>마이</button>
+</div></nav>
+
+<div class="toast" id="toast"></div>
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script>
+/* ══════════════ 상태 (화면 간 공유 — 살아있는 저니) ══════════════ */
+const PRICE = {BTC:165200000, ETH:8850000, XRP:4120, AVAX:45200, NEAR:8560, APT:11900, DOGE:520, XLM:610, TRX:480};
+const NAMES = {BTC:'비트코인', ETH:'이더리움', XRP:'리플', AVAX:'아발란체', NEAR:'니어프로토콜', APT:'앱토스', DOGE:'도지코인', XLM:'스텔라루멘', TRX:'트론'};
+const CHG = {BTC:'+0.42%', ETH:'+1.34%', XRP:'-0.28%', AVAX:'+3.12%', NEAR:'+1.88%', APT:'-0.95%'};
+const FEATURE = ['AVAX','NEAR','APT'];   // 스킴3 피처 토큰 (재고 처분 ∩ 순입금 유치)
+
+const S = {
+  krw: 5000000,
+  holdings: {},                      // sym -> {qty, fromEvent}
+  boxes: {bronze:1, silver:0},
+  tickets: 0,
+  // ── 포인트 레이어 (비현금성 원장) ──
+  points: 120,                       // 현재 잔액
+  lifetimePoints: 320,               // 누적 적립 (티어 계산용 · 데모 시작값)
+  premiumDays: 0,
+  pointsLog: [                       // 원장 (적립/사용/소멸) · 잔액120=적립320−사용200과 정합
+    {t:'어제', d:'시황 리포트 열람', v:30},
+    {t:'2일 전', d:'포트폴리오 점검', v:20},
+    {t:'5일 전', d:'수수료 쿠폰 교환', v:-200},
+    {t:'최근 30일', d:'허브 미션 누적 적립', v:270},
+  ],
+  // ── 상시 리워드 허브 (인프라 레이어) ──
+  hub: { track:'core', streak:4, todayDone:{}, pendingWatch:false },
+  watchlist: {},                     // 관심종목 알림 (코어 미션 연결)
+  // ── 스킴1 온보딩 (허브 신규 트랙 연결) — 가입·KYC는 완료 상태 ──
+  onboard: { joined:true, kyc:true, linked:false, firstDeposit:false, firstTrade:false, done:false },
+  // ── 운영·홀드아웃 대시보드 (경영진 데모 · 내부용) ──
+  admin: {
+    missionOff: {},
+    holdout: { treatment:44, control:39 },
+    anomalies: [
+      {id:1, sev:'high', t:'다계정 의심 클러스터 (12개 계정)', d:'동일 기기·IP에서 순입금 미션 반복 달성', status:'대기'},
+      {id:2, sev:'mid',  t:'봇 패턴 의심 (h***7)',            d:'퀴즈 미션에 0.3초 내 반복 응답',         status:'대기'},
+      {id:3, sev:'low',  t:'출석 어뷰징 의심 (3개 계정)',      d:'동일 기기에서 교차 로그인 패턴 반복',    status:'대기'},
+    ],
+    cfo: {a:false,b:false,c:false,d:false,e:false},
+  },
+  couponUsed: false, couponActive: false,
+  checkin: false, retroDone: false,
+  exToken: 'AVAX', exAmt: 100000,
+  dpToken: 'AVAX',
+  ev3: { joined:false, active:'AVAX',
+    tk: { AVAX:{quiz:false,dep:false,trade:false,net:0,traded:0},
+          NEAR:{quiz:false,dep:false,trade:false,net:0,traded:0},
+          APT :{quiz:false,dep:false,trade:false,net:0,traded:0} } },
+  ev2: { quiz:false, trade:false, dep:false, traded:0, net:0, stampDay:0, attendedToday:false, fcfs:188 },
+  fcfs: 122,
+  journey: {benefit:false, event:false, mission:false, reward:false, use:false},
+  log: []
+};
+
+/* ══════════════ 리워드 실험실 — 여기에 항목을 추가하면 자동 렌더 ══════════════ */
+const LAB_FEATURES = [
+  { icon:'🤝', bg:'var(--blue-soft)', title:'친구 초대 리워드', desc:'추천 코드 공유 · 가입+첫 거래 시 양쪽 5,000P', btn:'코드 복사',
+    onclick:'labRefer()', id:'labReferBtn' },
+  { icon:'🏅', bg:'var(--amber-bg)', title:'시즌 패스 (예고)', desc:'분기별 미션 패스로 상위 티어·한정 배지 도전', btn:'미리보기',
+    onclick:'labSeason()', id:'labSeasonBtn', tag:'실험' },
+  { icon:'🧩', bg:'var(--teal-bg)', title:'AI 맞춤 미션 (예고)', desc:'행동 기반 개인화 챌린지를 자동 추천 (세그먼트/개인화)', btn:'미리보기',
+    onclick:'labAI()', id:'labAIBtn', tag:'실험' },
+];
+
+/* ══════════════ 상시 허브 미션 (정보·성과형 · 이중 트랙) ══════════════ */
+const HUB_MISSIONS = {
+  core: [   // 코어(남성 투자자) — 정보·시장 행동
+    {id:'market',    icon:'📊', bg:'var(--blue-soft)', title:'오늘의 시황 리포트 열람', desc:'UBCI·주요 지표 브리핑 확인', pt:30},
+    {id:'watch',     icon:'⭐', bg:'var(--amber-bg)',  title:'관심종목 알림 설정',      desc:'가격·급등락 알림 1개 이상',  pt:20},
+    {id:'portfolio', icon:'📈', bg:'var(--teal-bg)',   title:'내 포트폴리오 점검',       desc:'보유 자산 수익률 확인',      pt:20},
+    {id:'onchain',   icon:'🔗', bg:'var(--purple-bg)', title:'온체인 지표 학습',         desc:'오늘의 리서치 아티클 1편',   pt:30},
+  ],
+  new: [    // 신규(여성·중장년) — 학습·습관 (온보딩은 아래 전용 스테이지 카드로 분리)
+    {id:'quiz',    icon:'🧠', bg:'var(--teal-bg)',   title:'오늘의 코인 상식 퀴즈', desc:'1문제 풀고 개념 익히기',   pt:20},
+    {id:'attend',  icon:'📅', bg:'var(--blue-soft)', title:'출석 체크',            desc:'매일 방문하고 스트릭 쌓기', pt:10},
+  ],
+};
+
+/* ══════════════ 티어 (비금전 지위 · 정보 접근권) ══════════════ */
+const TIERS = [
+  {min:0,    name:'일반',       icon:'🌱', benefit:'기본 미션·포인트 적립'},
+  {min:300,  name:'애널리스트', icon:'📘', benefit:'신규 상장 알림 우선 수신'},
+  {min:1000, name:'프로',       icon:'💎', benefit:'데일리 리서치 리포트 얼리액세스'},
+  {min:3000, name:'VIP',        icon:'👑', benefit:'전용 혜택·수수료 우대 (초대제)'},
+];
+function tierInfo(){
+  let cur=TIERS[0], nx=null;
+  for (const t of TIERS){ if (S.lifetimePoints>=t.min) cur=t; else { nx=t; break; } }
+  const pct = nx ? Math.min(100, Math.round((S.lifetimePoints-cur.min)/(nx.min-cur.min)*100)) : 100;
+  return {cur, nx, pct};
+}
+
+/* ══════════════ 유틸 ══════════════ */
+const $ = id => document.getElementById(id);
+const fmt = n => n.toLocaleString('ko-KR');
+function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2600); }
+function addLog(text){ S.log.unshift({t:new Date().toTimeString().slice(0,5), text}); renderLog(); }
+function showModal(html){ $('modalBox').innerHTML=html; $('modalBg').classList.add('show'); }
+function closeModal(e){ if(e && e.target!==$('modalBg')) return; $('modalBg').classList.remove('show'); }
+
+/* ══════════════ 텍스트 인라인 편집 모드 ══════════════ */
+let EDIT_MODE = false;
+const EDITS = JSON.parse(localStorage.getItem('upbitMockupEdits') || '{}');
+function T(key, fallback){ return (EDITS[key]!=null && EDITS[key]!=='') ? EDITS[key] : fallback; }
+function applySavedEdits(){
+  document.querySelectorAll('[data-edit]').forEach(el=>{
+    const k = el.getAttribute('data-edit');
+    if (EDITS[k]!=null && el.textContent!==EDITS[k]) el.textContent = EDITS[k];
+  });
+}
+function applyEditMode(){
+  document.querySelectorAll('[data-edit]').forEach(el=>{ el.contentEditable = EDIT_MODE ? 'true' : 'false'; });
+}
+function toggleEditMode(){
+  EDIT_MODE = !EDIT_MODE;
+  document.body.classList.toggle('edit-mode', EDIT_MODE);
+  const b = $('editToggle');
+  b.classList.toggle('on', EDIT_MODE);
+  b.textContent = EDIT_MODE ? '✓ 편집 중 (끝나면 다시 탭)' : '✏️ 텍스트 편집';
+  applyEditMode();
+  toast(EDIT_MODE ? '점선 표시된 텍스트를 탭해서 바로 고쳐보세요' : '편집 모드를 종료했어요');
+}
+function resetEdits(){
+  if (Object.keys(EDITS).length===0){ toast('편집한 텍스트가 없어요'); return; }
+  if (!confirm('편집한 텍스트를 모두 기본값으로 초기화할까요?')) return;
+  localStorage.removeItem('upbitMockupEdits');
+  location.reload();
+}
+function dataEditClick(e, id){ if (EDIT_MODE){ e.stopPropagation(); return; } go(id); }
+document.addEventListener('focusout', e=>{
+  const el = e.target.closest && e.target.closest('[data-edit]');
+  if (!el) return;
+  const k = el.getAttribute('data-edit');
+  EDITS[k] = el.innerText.trim();
+  localStorage.setItem('upbitMockupEdits', JSON.stringify(EDITS));
+});
+document.addEventListener('keydown', e=>{
+  if (e.key==='Enter' && e.target.hasAttribute && e.target.hasAttribute('data-edit')){
+    e.preventDefault(); e.target.blur();
+  }
+});
+
+/* ══════════════ 화면 전환 + 동선 가이드 ══════════════ */
+const TITLES = {home:'홈', exchange:'거래소', deposit:'입출금', benefit:'혜택·이벤트', ev3:'혜택·이벤트', ev2:'혜택·이벤트', my:'마이', admin:'운영 대시보드(내부)'};
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $('scr-'+id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  const tabMap = {home:'home', exchange:'exchange', deposit:'deposit', benefit:'benefit', ev3:'benefit', ev2:'benefit', my:'my'};
+  if (tabMap[id]) $('tab-'+tabMap[id]).classList.add('on');
+  $('scrTitle').textContent = TITLES[id];
+  document.querySelector('.guide').style.display = (id==='admin') ? 'none' : '';
+  if (id==='benefit'){ S.journey.benefit=true; $('benefitBdg').style.display='none'; }
+  if (id==='ev3'||id==='ev2'){ S.journey.event=true; }
+  window.scrollTo(0,0);
+  renderGuide(); renderAll();
+}
+const GSTEPS = [
+  ['접속', ()=>true],
+  ['혜택 탭', ()=>S.journey.benefit],
+  ['이벤트 확인·참여', ()=>S.journey.event],
+  ['미션 수행', ()=>S.journey.mission],
+  ['보상 받기·확인', ()=>S.journey.reward],
+  ['보상 사용', ()=>S.journey.use],
+];
+function renderGuide(){
+  const cur = document.querySelector('.screen.active').id.replace('scr-','');
+  const curStep = {home:0, benefit:1, ev3:2, ev2:2, exchange:3, deposit:3, my:4}[cur] ?? 0;
+  $('guideBar').innerHTML = GSTEPS.map((g,i)=>{
+    const done = g[1]();
+    const cls = 'gstep' + (done?' done':'') + (i===curStep?' now':'');
+    return `<span class="${cls}">${done?'✓ ':''}${i+1}. ${g[0]}</span>`;
+  }).join('');
+}
+
+/* ══════════════ 홈 ══════════════ */
+function renderHome(){
+  $('homeKrw').textContent = fmt(S.krw)+' KRW';
+  const list = HUB_MISSIONS[S.hub.track].filter(m=>!S.admin.missionOff[m.id]);
+  const left = list.filter(m=>!S.hub.todayDone[m.id]).length;
+  $('homeHubLeft').textContent = left;
+  $('homeStreak').textContent = S.hub.streak;
+  $('homeTier').textContent = tierInfo().cur.name;
+  $('mktList').innerHTML = ['BTC','ETH','XRP','AVAX','NEAR','APT'].map(s=>{
+    const up = CHG[s].startsWith('+'), w=S.watchlist[s];
+    return `<div class="mkt-row" onclick="S.exToken='${s}';go('exchange')">
+      <div class="mkt-name"><div class="n">${NAMES[s]} ${FEATURE.includes(s)?'<span class="chiptag tag-new">이벤트</span>':''}</div><div class="s">${s}/KRW</div></div>
+      <div class="mkt-price"><div class="p ${up?'c-up':'c-down'}">${fmt(PRICE[s])}</div><div class="c ${up?'c-up':'c-down'}">${CHG[s]}</div></div>
+      <span class="watch-star ${w?'on':''}" onclick="event.stopPropagation();toggleWatch('${s}')">${w?'★':'☆'}</span></div>`;
+  }).join('');
+}
+
+/* ══════════════ 상시 리워드 허브 (인프라 레이어) ══════════════ */
+function addPoints(pt, reason){
+  S.points += pt; S.lifetimePoints += pt;
+  S.pointsLog.unshift({t:'방금', d:reason, v:pt});
+}
+function renderHub(){
+  const {cur, nx, pct} = tierInfo();
+  $('hubTierIcon').textContent = cur.icon;
+  $('hubTierName').textContent = cur.name;
+  $('hubTierBenefit').textContent = cur.benefit;
+  $('hubStreak').textContent = S.hub.streak;
+  $('hubPoints').textContent = fmt(S.points);
+  $('hubTierNext').textContent = nx ? `${nx.name}까지 ${fmt(nx.min-S.lifetimePoints)}P` : '최고 티어 달성';
+  $('hubProgFill').style.width = pct+'%';
+  // 트랙 토글
+  $('trackToggle').innerHTML = [['core','코어 · 투자자'],['new','신규 · 입문']].map(([k,label])=>
+    `<button class="${S.hub.track===k?'on':''}" onclick="S.hub.track='${k}';renderAll()">${label}</button>`).join('');
+  // 오늘의 미션 (운영에서 끈 미션은 사용자 화면에서 즉시 제외)
+  const list = HUB_MISSIONS[S.hub.track].filter(m=>!S.admin.missionOff[m.id]);
+  const done = list.filter(m=>S.hub.todayDone[m.id]).length;
+  $('hubMissionCnt').textContent = `${done}/${list.length} 완료`;
+  $('hubMissions').innerHTML = list.map(m=>{
+    const d = S.hub.todayDone[m.id];
+    return `<div class="mrow"><div class="micon" style="background:${m.bg}">${m.icon}</div>
+      <div class="mbody"><div class="mtitle">${m.title}</div><div class="msub">${m.desc} · <b style="color:var(--purple)">+${m.pt}P</b></div></div>
+      <div class="mstate">${d?'<button class="chip chip-done">완료</button>':`<button class="chip chip-line" onclick="hubMission('${m.id}')">수행</button>`}</div></div>`;
+  }).join('');
+  // 티어 혜택 (언락/락)
+  $('tierBenefits').innerHTML = TIERS.map(t=>{
+    const on = S.lifetimePoints>=t.min;
+    return `<div class="tb-row ${on?'unlocked':'locked'}"><div class="ic">${on?'✓':'🔒'}</div>
+      <div class="tn">${t.icon} ${t.name} <span class="tg">· ${t.benefit}</span></div></div>`;
+  }).join('');
+  // 온보딩 카드는 신규 트랙 + 미완료 시 노출 (세그먼트 개인화)
+  $('onboardCard').style.display = (S.hub.track==='new' && !S.onboard.done) ? 'block' : 'none';
+  renderOnboard();
+}
+
+/* ══════════════ 스킴1 온보딩 (허브 신규 트랙 연결) ══════════════ */
+const OB_STAGES = [
+  {key:'joined',       t:'회원가입',        pt:50,  action:null,          box:null},
+  {key:'kyc',          t:'KYC 인증',        pt:50,  action:null,          box:null},
+  {key:'linked',       t:'계좌(은행) 연동',  pt:100, action:'onboardLink()', abtn:'연동하기', box:null},
+  {key:'firstDeposit', t:'첫 입금',         pt:200, action:"go('deposit')", abtn:'입금하러',  box:'웰컴 실버 박스'},
+  {key:'firstTrade',   t:'첫 거래',         pt:300, action:"go('exchange')",abtn:'거래하러',  box:'웰컴 실버 박스'},
+];
+function obCount(){ return OB_STAGES.filter(s=>S.onboard[s.key]).length; }
+function renderOnboard(){
+  const n = obCount();
+  $('obProgFill').style.width = (n/OB_STAGES.length*100)+'%';
+  $('obProgLabel').textContent = `${n}/${OB_STAGES.length} 단계`;
+  $('obStages').innerHTML = OB_STAGES.map(s=>{
+    const done = S.onboard[s.key];
+    const reward = `+${s.pt}P${s.box?` · <span class="box">${s.box}</span>`:''}`;
+    const right = done
+      ? '<span style="font-size:12px;color:var(--teal);font-weight:600">완료</span>'
+      : (s.action ? `<button class="chip chip-go" onclick="${s.action}">${s.abtn}</button>`
+                  : '<span style="font-size:12px;color:var(--ink-4)">대기</span>');
+    return `<div class="ob-row">
+      <div class="ob-check ${done?'done':'todo'}">${done?'✓':''}</div>
+      <div class="ob-body"><div class="ob-t ${done?'done':''}">${s.t}</div><div class="ob-d">${reward}</div></div>
+      <div class="mstate">${right}</div></div>`;
+  }).join('');
+}
+function onboardLink(){
+  if (S.onboard.linked) return;
+  S.onboard.linked = true; S.journey.mission=true;
+  addPoints(100,'온보딩 · 계좌 연동'); addLog('온보딩 · 계좌 연동 완료 → +100P');
+  toast('계좌 연동 완료! +100P'); onboardCheckFull(); renderAll();
+}
+function onboardMark(key, pt, label){
+  if (S.onboard[key]) return;
+  S.onboard[key] = true; S.journey.mission=true;
+  addPoints(pt, `온보딩 · ${label}`); addLog(`온보딩 · ${label} 완료 → +${pt}P`);
+  toast(`온보딩 ${label} 완료! +${pt}P`);
+  onboardCheckFull();
+}
+function onboardCheckFull(){
+  if (S.onboard.done) return;
+  if (OB_STAGES.every(s=>S.onboard[s.key])){
+    S.onboard.done = true; S.journey.reward=true; S.tickets++;
+    addPoints(500,'온보딩 완주 보너스'); addLog('온보딩 5단계 완주 → 웰컴 플래티넘 + 보너스 500P');
+    showModal(`<div class="big" style="background:var(--purple-bg)">🎉</div><h3>온보딩 완주!</h3>
+      <p class="amt">가입부터 첫 거래까지 완주했어요.<br><b>웰컴 플래티넘 박스</b> + 보너스 <b>500P</b> 지급!</p>
+      <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal();go('my')">지갑 확인</button></div>`);
+  }
+}
+function findHubMission(id){ return HUB_MISSIONS.core.concat(HUB_MISSIONS.new).find(x=>x.id===id); }
+function hubMission(id){
+  if (S.hub.todayDone[id]) return;
+  // 코어 트랙 미션을 실제 화면·콘텐츠로 연결 (온보딩과 동일 원칙)
+  switch(id){
+    case 'market':    openMarketBrief(); return;                       // 시황 브리핑 콘텐츠 열람
+    case 'onchain':   openResearch(); return;                          // 리서치 아티클 학습
+    case 'portfolio': go('my'); hubMissionDone('portfolio'); return;   // 마이 탭 보유자산 점검
+    case 'watch':     S.hub.pendingWatch=true; go('home');
+                      toast('시세에서 관심 코인의 ☆를 눌러 알림을 설정하세요'); return;
+    case 'quiz':      openHubQuiz(); return;                           // 신규 트랙 학습 퀴즈
+    default:          hubMissionDone(id);                             // attend 등 즉시 완료
+  }
+}
+function hubMissionDone(id){
+  const m = findHubMission(id);
+  if (!m || S.hub.todayDone[id]) { closeModal(); return; }
+  S.hub.todayDone[id] = true;
+  addPoints(m.pt, `허브 · ${m.title}`);
+  addLog(`상시 허브 미션 완료 → +${m.pt}P (${m.title})`);
+  closeModal();
+  toast(`+${m.pt}P 적립 — ${m.title}`);
+  renderAll();
+}
+function openHubQuiz(){
+  showModal(`<h3 style="margin-top:0">오늘의 코인 상식</h3><div class="quiz-q" style="text-align:left">Q. 블록체인에서 '지갑 주소'는?</div>
+    <div class="quiz-opts">
+      <button class="opt" onclick="this.style.opacity=.5;this.style.borderColor='var(--red)'">비밀번호처럼 숨겨야 하는 값</button>
+      <button class="opt" onclick="hubMissionDone('quiz')">입금받을 때 공유해도 되는 공개 값</button></div>`);
+}
+function openMarketBrief(){
+  const done = S.hub.todayDone['market'];
+  const rows = ['AVAX','NEAR','ETH','APT','XRP'].map(s=>{
+    const up = CHG[s].startsWith('+');
+    return `<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)">
+      <span>${NAMES[s]}</span><b class="${up?'c-up':'c-down'}">${CHG[s]}</b></div>`;
+  }).join('');
+  showModal(`<h3 style="margin-top:0;text-align:left">📊 오늘의 시황 브리핑</h3>
+    <div style="text-align:left">
+      <div style="background:#fafafa;border-radius:10px;padding:12px;font-size:13px;line-height:1.6">
+        업비트 종합지수(UBCI) <b>9,720.3 <span class="c-up">+0.42%</span></b><br>
+        24h 거래대금 1.34조 · 공포탐욕 45(중립)</div>
+      <div style="margin-top:10px">${rows}</div>
+      <p style="font-size:12px;color:var(--ink-3);margin-top:10px;line-height:1.6">한 줄 요약 — 알트 중심 반등, AVAX·NEAR가 상승 주도. 순입금 유입이 늘며 거래대금 회복.</p>
+    </div>
+    <div class="mbtns"><button style="background:${done?'#f4f4f5':'var(--blue)'};color:${done?'var(--ink-3)':'#fff'}" onclick="${done?'closeModal()':"hubMissionDone('market')"}">${done?'닫기':'확인 (+30P)'}</button></div>`);
+}
+function openResearch(){
+  const done = S.hub.todayDone['onchain'];
+  showModal(`<h3 style="margin-top:0;text-align:left">🔗 온체인 리서치 · 오늘의 아티클</h3>
+    <div style="text-align:left">
+      <div style="font-size:14px;font-weight:700">거래소 순입금 흐름으로 읽는 유동성 이동</div>
+      <p style="font-size:12.5px;color:var(--ink-2);margin-top:8px;line-height:1.65">
+        · 이번 주 주요 알트의 <b>거래소 순입금</b>이 순유출에서 순유입 전환.<br>
+        · 신규 지갑 유입 대비 <b>홀딩 유지율</b>이 개선되며 락인 신호.<br>
+        · 스테이블코인 예치 증가 → 대기 매수세 관측.</p>
+    </div>
+    <div class="mbtns"><button style="background:${done?'#f4f4f5':'var(--blue)'};color:${done?'var(--ink-3)':'#fff'}" onclick="${done?'closeModal()':"hubMissionDone('onchain')"}">${done?'닫기':'학습 완료 (+30P)'}</button></div>`);
+}
+function toggleWatch(sym){
+  S.watchlist[sym] = !S.watchlist[sym];
+  if (S.watchlist[sym] && S.hub.pendingWatch && !S.hub.todayDone['watch']){
+    S.hub.pendingWatch=false; addLog(`${sym} 관심종목 알림 설정`);
+    hubMissionDone('watch'); return;
+  }
+  toast(S.watchlist[sym]?`${sym} 관심종목 알림 설정`:`${sym} 알림 해제`);
+  renderHome();
+}
+
+/* ══════════════ 거래소 ══════════════ */
+function renderExchange(){
+  $('exSeg').innerHTML = ['AVAX','NEAR','APT','BTC'].map(s=>
+    `<button class="${S.exToken===s?'on':''}" onclick="S.exToken='${s}';renderExchange()">${s}${FEATURE.includes(s)?' ⭐':''}</button>`).join('');
+  $('exAmts').innerHTML = [100000,500000,1000000].map(a=>
+    `<button class="${S.exAmt===a?'on':''}" onclick="S.exAmt=${a};renderExchange()">${fmt(a/10000)}만 원</button>`).join('');
+  const fee = Math.round(S.exAmt*0.0005), disc = S.couponActive? Math.round(fee/2):fee;
+  $('feeView').innerHTML = S.couponActive? `<span class="strike">${fmt(fee)}원</span><b class="free">${fmt(disc)}원 (쿠폰 적용)</b>` : fmt(fee)+'원';
+  $('totalView').textContent = fmt(S.exAmt+disc)+'원';
+  $('feeCpnRow').style.display = S.couponActive?'block':'none';
+  // 미션 힌트
+  let hint = '<h2>이 거래로 달성되는 미션</h2>';
+  const items = [];
+  if (S.ev2.quiz||S.ev2.trade||S.ev2.dep||S.journey.event) {
+    items.push(`<div class="mrow"><div class="micon" style="background:var(--blue-soft);color:var(--blue)">⇄</div><div class="mbody"><div class="mtitle">잔고 대이동 · 거래 미션</div><div class="msub">10만 원 이상 거래 ${S.ev2.trade?'— <b style=\'color:var(--teal)\'>달성 완료</b>':''}</div></div></div>`);
+  }
+  if (S.ev3.joined && FEATURE.includes(S.exToken)) {
+    const done = S.ev3.tk[S.exToken].trade;
+    items.push(`<div class="mrow"><div class="micon" style="background:var(--teal-bg);color:var(--teal)">🪙</div><div class="mbody"><div class="mtitle">멀티토큰 · ${S.exToken} 거래 미션</div><div class="msub">${S.exToken} 10만 원 이상 거래 ${done?'— <b style=\'color:var(--teal)\'>달성 완료</b>':''}</div></div></div>`);
+  }
+  $('exMissionHint').innerHTML = hint + (items.join('')||'<p class="msub" style="margin-top:8px">참여 중인 이벤트가 없어요. 혜택 탭에서 이벤트에 먼저 참여해 보세요!</p>');
+}
+function buy(){
+  const amt = S.exAmt, sym = S.exToken;
+  const fee = S.couponActive? Math.round(amt*0.0005/2):Math.round(amt*0.0005);
+  if (S.krw < amt+fee){ toast('보유 KRW가 부족해요 (목업 잔고)'); return; }
+  S.krw -= (amt+fee);
+  const qty = amt/PRICE[sym];
+  if(!S.holdings[sym]) S.holdings[sym]={qty:0, fromEvent:false};
+  S.holdings[sym].qty += qty;
+  addLog(`${sym} ${fmt(amt)}원 매수 체결 (수수료 ${fmt(fee)}원${S.couponActive?' · 쿠폰':''})`);
+  if (S.couponActive){ S.journey.use=true; }
+  toast(`${NAMES[sym]} ${fmt(amt)}원 매수 체결!`);
+  // ── 미션 판정 (조건 1회 충족 → 즉시 보상 = L1)
+  if (!S.ev2.trade && amt>=100000){
+    S.ev2.trade=true; S.ev2.traded+=amt; S.journey.mission=true;
+    grantBox('silver','잔고 대이동 · 거래 미션');
+    grantCoupon();
+  } else { S.ev2.traded+=amt; }
+  if (S.ev3.joined && FEATURE.includes(sym)){
+    const tk=S.ev3.tk[sym]; tk.traded+=amt;
+    if (!tk.trade && amt>=100000){ tk.trade=true; S.journey.mission=true; grantBox('silver',`멀티토큰 · ${sym} 거래 미션`); checkCombo(); }
+  }
+  if (!S.onboard.firstTrade){ onboardMark('firstTrade', 300, '첫 거래'); }   // 스킴1 온보딩 연결
+  renderAll();
+}
+function grantCoupon(){
+  if (S.couponGranted) return; S.couponGranted=true;
+  addLog('거래 수수료 50% 쿠폰 지급 — 마이 탭에서 사용');
+  setTimeout(()=>showModal(`<div class="big">🎟</div><h3>수수료 쿠폰 지급!</h3>
+    <p class="amt">거래 미션 보상으로 <b>수수료 50% 쿠폰</b>을 받았어요.<br>마이 탭 → 쿠폰에서 사용해 보세요.</p>
+    <div class="mbtns"><button style="background:#f4f4f5;color:var(--ink-2)" onclick="closeModal()">나중에</button>
+    <button style="background:var(--blue);color:#fff" onclick="closeModal();go('my')">마이로 이동</button></div>`),650);
+}
+
+/* ══════════════ 입출금 (순입금 개념 테스트) ══════════════ */
+function renderDeposit(){
+  $('dpSeg').innerHTML = FEATURE.map(s=>
+    `<button class="${S.dpToken===s?'on':''}" onclick="S.dpToken='${s}';renderDeposit()">${s} ⭐</button>`).join('');
+  const tk = S.ev3.tk[S.dpToken];
+  $('netView').innerHTML = `<b>${S.dpToken}</b> 내 순입금: <b>${fmt(tk.net)}원</b> (외부입금−외부출금) · 잔고 대이동 순입금: <b>${fmt(S.ev2.net)}원</b>`;
+}
+function extDeposit(amt){
+  const sym=S.dpToken, tk=S.ev3.tk[sym];
+  tk.net += amt; S.ev2.net += amt;
+  if(!S.holdings[sym]) S.holdings[sym]={qty:0, fromEvent:false};
+  S.holdings[sym].qty += amt/PRICE[sym];
+  addLog(`${sym} 외부 입금 +${fmt(amt)}원 상당 (순입금 인정)`);
+  toast(`외부 입금 완료 — ${sym} 순입금 +${fmt(amt)}원`);
+  if (S.ev3.joined && !tk.dep && tk.net>=500000){
+    tk.dep=true; S.journey.mission=true;
+    S.fcfs=Math.max(0,S.fcfs-1);
+    grantBox('silver',`멀티토큰 · ${sym} 순입금 미션`);
+    addLog(`${sym} 선착순 달성 — 정산 시 골드+ 지급 예정`);
+    checkCombo();
+  }
+  if (!S.ev2.dep && S.ev2.net>=500000){
+    S.ev2.dep=true; S.journey.mission=true;
+    grantBox('silver','잔고 대이동 · 입금 미션');
+  }
+  if (!S.onboard.firstDeposit){ onboardMark('firstDeposit', 200, '첫 입금'); }   // 스킴1 온보딩 연결
+  renderAll();
+}
+function internalMove(){
+  toast('내 계정 간 이동은 순입금으로 인정되지 않아요 (집계 제외)');
+  addLog('내부 이동 시도 — 순입금 미인정 (어뷰징 방어 규칙)');
+}
+function withdrawOut(){
+  const sym=S.dpToken, tk=S.ev3.tk[sym];
+  tk.net=Math.max(0,tk.net-500000); S.ev2.net=Math.max(0,S.ev2.net-500000);
+  addLog(`${sym} 외부 출금 −50만 원 — 순입금 차감 (홀딩 미유지 시 등급 하향)`);
+  toast('외부 출금 — 순입금이 차감됐어요. 종료 시점까지 유지해야 등급 인정!');
+  renderAll();
+}
+
+/* ══════════════ 스킴3 이벤트 ══════════════ */
+const QUIZ3 = {
+  AVAX: ['Q. 아발란체(AVAX)의 특징은?', ['국내 원화마켓 전용 토큰이다','서브넷 기반 고속 L1 블록체인이다'], 1],
+  NEAR: ['Q. 니어프로토콜(NEAR)의 특징은?', ['샤딩 기반 L1 블록체인이다','비트코인의 사이드체인이다'], 0],
+  APT : ['Q. 앱토스(APT)가 사용하는 언어는?', ['Move','Solidity'], 0],
+};
+function joinEv3(){
+  S.ev3.joined = true; S.journey.event=true;
+  $('ev3JoinCard').innerHTML = `<h2><span data-edit="ev3.h.join">${T('ev3.h.join','이벤트 참여')}</span> <span class="chiptag tag-live">참여중</span></h2><p class="msub" style="margin-top:8px">참여가 확인됐어요. 지금부터 실적이 집계돼요. 아래 토큰별 미션을 달성해 보세요!</p>`;
+  addLog('멀티토큰 잔고 이전 챌린지 참여');
+  toast('이벤트 참여 완료! 토큰별 미션이 열렸어요');
+  renderAll();
+}
+function renderEv3(){
+  const a = S.ev3.active, tk = S.ev3.tk[a];
+  $('ttabs').innerHTML = FEATURE.map(s=>{
+    const t=S.ev3.tk[s], done=(t.quiz?1:0)+(t.dep?1:0)+(t.trade?1:0);
+    return `<div class="ttab ${a===s?'on':''}" onclick="S.ev3.active='${s}';renderAll()" style="cursor:pointer">
+      <div class="sym">${s}</div><div class="nd">${done}/3 미션</div></div>`;
+  }).join('');
+  $('tkNet').textContent = fmt(tk.net)+'원';
+  const grade = tk.net>=20000000?'N3':tk.net>=5000000?'N2':tk.net>=500000?'N1':'-';
+  $('tkGrade').textContent = grade; $('tkGrade').style.color = grade==='-'?'var(--ink-4)':'var(--teal)';
+  $('tkFcfs').textContent = S.fcfs+'명';
+  const j = S.ev3.joined;
+  $('tkMissions').innerHTML = `
+    <div class="mrow"><div class="micon" style="background:var(--teal-bg);color:var(--teal)">?</div>
+      <div class="mbody"><div class="mtitle">${a} 학습 퀴즈</div><div class="msub">토큰 알아보고 브론즈 랜덤박스 받아가세요!</div></div>
+      <div class="mstate">${tk.quiz?'<button class="chip chip-done">완료</button>':`<button class="chip chip-line" ${j?'':'disabled style="opacity:.4"'} onclick="tkQuiz('${a}')">풀기</button>`}</div></div>
+    <div class="mrow"><div class="micon" style="background:var(--amber-bg);color:var(--amber)">↓</div>
+      <div class="mbody"><div class="mtitle">${a} 순입금 미션</div><div class="msub">외부에서 ${a} 50만 원 이상 옮기기 · 선착순 골드+ 대상</div></div>
+      <div class="mstate">${tk.dep?'<button class="chip chip-done">완료</button>':`<button class="chip chip-go" ${j?'':'disabled style="opacity:.4"'} onclick="S.dpToken='${a}';go('deposit')">입금하러</button>`}</div></div>
+    <div class="mrow"><div class="micon" style="background:var(--blue-soft);color:var(--blue)">⇄</div>
+      <div class="mbody"><div class="mtitle">${a} 거래 미션</div><div class="msub">원화마켓에서 ${a} 10만 원 이상 거래하기</div></div>
+      <div class="mstate">${tk.trade?'<button class="chip chip-done">완료</button>':`<button class="chip chip-go" ${j?'':'disabled style="opacity:.4"'} onclick="S.exToken='${a}';go('exchange')">거래하러</button>`}</div></div>`;
+  // 콤보
+  const joinedTokens = FEATURE.filter(s=>{const t=S.ev3.tk[s]; return t.dep||t.trade;});
+  $('comboDots').innerHTML = FEATURE.map(s=>{
+    const on = S.ev3.tk[s].dep||S.ev3.tk[s].trade;
+    return `<div class="cdot ${on?'on':''}">${on?'✓ ':''}${s}</div>`;}).join('');
+  if (joinedTokens.length>=2) $('comboMsg').innerHTML = `🎉 <b>${joinedTokens.length}종 달성!</b> 정산 시 <b>플래티넘 콤보 박스</b> 자격이 확정됐어요 (7.15 지급).`;
+}
+function tkQuiz(sym){
+  const [q,opts,ans] = QUIZ3[sym];
+  showModal(`<h3 style="margin-top:0">${sym} 학습 퀴즈</h3><div class="quiz-q" style="text-align:left">${q}</div>
+    <div class="quiz-opts">${opts.map((o,i)=>`<button class="opt" onclick="tkAnswer('${sym}',${i},${ans},this)">${o}</button>`).join('')}</div>`);
+}
+function tkAnswer(sym,i,ans,el){
+  if (i===ans){
+    S.ev3.tk[sym].quiz=true; S.journey.mission=true;
+    closeModal(); grantBox('bronze',`멀티토큰 · ${sym} 학습 퀴즈`); S.tickets++;
+    renderAll();
+  } else { el.style.borderColor='var(--red)'; el.style.opacity=.5; toast('아쉬워요! 다시 골라보세요'); }
+}
+function checkRetro(){
+  if (S.retroDone) return;
+  S.retroDone=true; S.journey.mission=true;
+  $('retroBtn').outerHTML = '<div class="callout" style="margin-top:14px">✓ 소급 대상 확인 완료 — 브론즈 랜덤박스가 지급됐어요.</div>';
+  grantBox('bronze','소급 에어드랍 (6월 홀딩 스냅샷 대상)');
+}
+function checkCombo(){
+  const n = FEATURE.filter(s=>{const t=S.ev3.tk[s]; return t.dep||t.trade;}).length;
+  if (n===2) addLog('크로스토큰 콤보 달성 (2종) — 정산 시 플래티넘 콤보 자격');
+}
+
+/* ══════════════ 스킴2 (풀버전) ══════════════ */
+function ev2Quiz(){
+  if (S.ev2.quiz) return;
+  showModal(`<h3 style="margin-top:0">오늘의 퀴즈</h3><div class="quiz-q" style="text-align:left">Q. '순입금'으로 인정되는 것은?</div>
+    <div class="quiz-opts">
+      <button class="opt" onclick="this.style.opacity=.5;this.style.borderColor='var(--red)'">업비트 안에서 내 계정끼리 옮긴 자산</button>
+      <button class="opt" onclick="ev2QuizOk()">외부 지갑·타 거래소에서 새로 입금한 자산</button></div>`);
+}
+function ev2QuizOk(){
+  S.ev2.quiz=true; S.journey.mission=true; S.tickets++;
+  closeModal(); grantBox('bronze','잔고 대이동 · 오늘의 퀴즈'); renderAll();
+}
+function ev2Attend(){
+  if (S.ev2.attendedToday) return;
+  S.ev2.attendedToday=true; S.ev2.stampDay=Math.min(14,S.ev2.stampDay+1); S.journey.mission=true;
+  addLog(`잔고 대이동 · 출석 ${S.ev2.stampDay}일차`);
+  if ([3,7,14].includes(S.ev2.stampDay)) grantBox('bronze',`잔고 대이동 · 출석 ${S.ev2.stampDay}일차 보너스`);
+  else { toast(`출석 ${S.ev2.stampDay}일차 완료!`); renderAll(); }
+}
+const TRADE_TIERS=[{min:100000,code:'G1',label:'실버 박스 예상'},{min:1000000,code:'G2',label:'골드 박스 예상'},{min:5000000,code:'G3',label:'골드+ 박스 예상'},{min:20000000,code:'G4',label:'플래티넘 가중 예상'}];
+const NET_TIERS=[{min:500000,code:'N1',label:'골드 박스 예상'},{min:2000000,code:'N2',label:'골드+ 박스 예상'},{min:5000000,code:'N3',label:'플래티넘(하위) 예상'},{min:20000000,code:'N4',label:'플래티넘(상위) 예상'}];
+function gradeInfo(amount, missionDone, tiers){
+  if (!missionDone) return {code:'미참여', label:'', pct:0, next:`먼저 미션을 달성하면 ${tiers[0].code} 등급전이 열려요`};
+  let cur=tiers[0], nextT=null;
+  for (const t of tiers){ if (amount>=t.min) cur=t; else { nextT=t; break; } }
+  const base = cur.min, pct = nextT? Math.min(100,Math.round((amount-base)/(nextT.min-base)*100)) : 100;
+  const next = nextT? `${nextT.code}까지 ${fmt(nextT.min-amount)}원 남았어요` : '최고 등급을 예상하고 있어요!';
+  return {code:cur.code, label:cur.label, pct, next};
+}
+function renderEv2(){
+  $('ev2QuizBtn').outerHTML = S.ev2.quiz? '<button class="chip chip-done" id="ev2QuizBtn">완료</button>':'<button class="chip chip-line" id="ev2QuizBtn" onclick="ev2Quiz()">풀기</button>';
+  $('ev2TradeBtn').outerHTML = S.ev2.trade? '<button class="chip chip-done" id="ev2TradeBtn">완료</button>':'<button class="chip chip-go" id="ev2TradeBtn" onclick="go(\'exchange\')">거래하러 가기</button>';
+  $('ev2DepBtn').outerHTML = S.ev2.dep? '<button class="chip chip-done" id="ev2DepBtn">완료</button>':'<button class="chip chip-go" id="ev2DepBtn" onclick="go(\'deposit\')">입금하러 가기</button>';
+  $('ev2AttendBtn').outerHTML = S.ev2.attendedToday? '<button class="chip chip-done" id="ev2AttendBtn">출석 완료</button>':'<button class="chip chip-go" id="ev2AttendBtn" onclick="ev2Attend()">출석</button>';
+  // 선착순 게이지
+  $('ev2FcfsLeft').textContent = '잔여 '+S.ev2.fcfs+'명';
+  $('ev2FcfsFill').style.width = (100-S.ev2.fcfs/5)+'%';
+  // 예상 등급 (거래·순입금)
+  const g = gradeInfo(S.ev2.traded, S.ev2.trade, TRADE_TIERS);
+  $('ev2GVal').innerHTML = g.code + (g.label?` <small style="font-size:11px;font-weight:500;color:var(--ink-4)">${g.label}</small>`:'');
+  $('ev2GVal').style.color = S.ev2.trade?'var(--blue)':'var(--ink-4)';
+  $('ev2GBar').style.width = g.pct+'%';
+  $('ev2GNext').textContent = g.next;
+  const n = gradeInfo(S.ev2.net, S.ev2.dep, NET_TIERS);
+  $('ev2NVal').innerHTML = n.code + (n.label?` <small style="font-size:11px;font-weight:500;color:var(--ink-4)">${n.label}</small>`:'');
+  $('ev2NVal').style.color = S.ev2.dep?'var(--blue)':'var(--ink-4)';
+  $('ev2NBar').style.width = n.pct+'%';
+  $('ev2NNext').textContent = n.next;
+  // 출석 스탬프
+  $('ev2StampCnt').textContent = S.ev2.stampDay+' / 14일';
+  $('ev2StampGrid').innerHTML = Array.from({length:14},(_,i)=>{
+    const d=i+1, on=d<=S.ev2.stampDay, today=d===S.ev2.stampDay+1 && !S.ev2.attendedToday;
+    return `<div class="stamp ${on?'on':''} ${today?'today':''} ${[3,7,14].includes(d)?'bonus':''}">${on?'✓':d}</div>`;
+  }).join('');
+}
+
+/* ══════════════ 보상: 랜덤박스 ══════════════ */
+const BOXDEF = {bronze:['🥉','브론즈','#fdf0e4'], silver:['🥈','실버','#f1f3f6']};
+const POOL = {   // [토큰, 수량] — 기대가치: 브론즈 ~1,500원 / 실버 ~3,500원
+  bronze:[['DOGE',3],['XLM',2],['TRX',4]],
+  silver:[['AVAX',0.08],['NEAR',0.4],['APT',0.3]],   // 실버 = 피처 토큰 재고 소진 (스킴3 재원 설계)
+};
+function grantBox(kind, reason){
+  S.boxes[kind]=(S.boxes[kind]||0)+1; S.journey.reward=true;
+  addLog(`${BOXDEF[kind][1]} 랜덤박스 +1 — ${reason}`);
+  showModal(`<div class="big" style="background:${BOXDEF[kind][2]}">${BOXDEF[kind][0]}</div>
+    <h3>${BOXDEF[kind][1]} 랜덤박스 획득!</h3><p class="amt">${reason} 보상이 <b>즉시</b> 지급됐어요.<br>마이 탭 보관함에서 열어보세요.</p>
+    <div class="mbtns"><button style="background:#f4f4f5;color:var(--ink-2)" onclick="closeModal()">계속하기</button>
+    <button style="background:var(--blue);color:#fff" onclick="closeModal();go('my')">보관함으로</button></div>`);
+  renderAll();
+}
+function openBox(kind){
+  if(!S.boxes[kind]) return;
+  S.boxes[kind]--;
+  const pool=POOL[kind], [sym,qty]=pool[Math.floor(Math.random()*pool.length)];
+  if(!S.holdings[sym]) S.holdings[sym]={qty:0, fromEvent:true};
+  S.holdings[sym].qty+=qty; S.holdings[sym].fromEvent=true;
+  S.journey.reward=true;
+  const val = Math.round(qty*PRICE[sym]);
+  addLog(`${BOXDEF[kind][1]} 박스 개봉 → ${NAMES[sym]} ${qty}개 (약 ${fmt(val)}원) 입금`);
+  showModal(`<div class="big" style="background:${BOXDEF[kind][2]}">🎉</div>
+    <h3>${NAMES[sym]} 당첨!</h3><p class="amt"><b>${sym} ${qty}개</b> (약 ${fmt(val)}원 상당)가<br>보유자산에 바로 입금됐어요.</p>
+    <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal()">확인</button></div>`);
+  renderAll();
+}
+
+/* ══════════════ 보상 사용 ══════════════ */
+function useCoupon(){
+  if (S.couponUsed || !S.couponGranted){ toast(S.couponGranted?'이미 사용한 쿠폰이에요':'거래 미션을 달성하면 쿠폰을 받아요'); return; }
+  S.couponUsed=true; S.couponActive=true;
+  addLog('수수료 50% 쿠폰 사용 — 다음 거래부터 적용');
+  showModal(`<div class="big" style="background:var(--amber-bg)">🎟</div><h3>쿠폰 적용 완료</h3>
+    <p class="amt">다음 매수부터 <b>수수료 50% 할인</b>이 적용돼요.<br>거래소에서 확인해 보세요 — 보상 사용의 완성!</p>
+    <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal();go('exchange')">거래소로</button></div>`);
+  renderAll();
+}
+/* ── 포인트 지갑 사용처 (비현금성 · 원화환급/코인교환 제외) ── */
+function spendPoints(cost, reason){
+  if (S.points < cost){ toast(`포인트가 부족해요 (${fmt(cost)}P 필요)`); return false; }
+  S.points -= cost; S.pointsLog.unshift({t:'방금', d:reason, v:-cost});
+  S.journey.use = true; addLog(`포인트 ${fmt(cost)}P 사용 — ${reason}`);
+  return true;
+}
+function useFeeCoupon(){
+  if (!spendPoints(300,'수수료 20% 쿠폰 교환')) return;
+  S.couponGranted = true;
+  toast('수수료 쿠폰으로 교환했어요 — 쿠폰 목록에서 사용'); renderAll();
+}
+function useTicketExchange(){
+  if (!spendPoints(100,'추첨 응모권 교환')) return;
+  S.tickets++; toast('추첨 응모권 1장으로 교환했어요'); renderAll();
+}
+function useUnlockPremium(){
+  if (S.premiumDays>0){ toast('이미 프리미엄 리서치 이용 중이에요'); return; }
+  if (!spendPoints(500,'프리미엄 리서치 30일 unlock')) return;
+  S.premiumDays = 30;
+  showModal(`<div class="big" style="background:var(--teal-bg)">📈</div><h3>프리미엄 리서치 열림</h3>
+    <p class="amt"><b>30일</b> 동안 심화 리서치·온체인 리포트를 볼 수 있어요.<br>비현금성 포인트의 대표 사용처예요.</p>
+    <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal()">확인</button></div>`);
+  renderAll();
+}
+function useMall(){ toast('폐쇄형 혜택몰은 Phase 2에 열려요 (준비 중)'); }
+
+/* ══════════════ 리워드 실험실 ══════════════ */
+function renderLab(){
+  $('labList').innerHTML = LAB_FEATURES.map((f,i)=>`
+    <div class="lab-item"><div class="micon" style="background:${f.bg}">${f.icon}</div>
+      <div class="mbody"><div class="mtitle"><span data-edit="lab.${i}.title">${T('lab.'+i+'.title',f.title)}</span> ${f.tag?`<span class="chiptag tag-lab">${f.tag}</span>`:''}</div><div class="msub" data-edit="lab.${i}.desc">${T('lab.'+i+'.desc',f.desc)}</div></div>
+      <div class="mstate"><button class="chip chip-line" id="${f.id}" onclick="${f.onclick}">${f.btn}</button></div></div>`).join('');
+  if (S.checkin){ const b=$('labCheckinBtn'); if(b){b.className='chip chip-done'; b.textContent='완료'; b.onclick=null;} }
+}
+function labCheckin(){
+  if (S.checkin) return;
+  S.checkin=true; S.points+=10; S.journey.reward=true;
+  addLog('데일리 체크인 +10P (리워드 실험실)');
+  toast('체크인 완료! 10P 적립 — 마이 탭에서 KRW 전환 가능');
+  renderAll();
+}
+function labRefer(){ toast('추천 코드 UPBIT-RUBY 복사됨 (목업)'); addLog('추천 코드 공유 (실험 기능)'); }
+function labSeason(){ showModal(`<div class="big" style="background:var(--amber-bg)">🏅</div><h3>시즌 패스 (예고)</h3>
+  <p class="amt">분기 단위 미션 패스로 상위 티어와 <b>한정 배지</b>에 도전하는 구조예요.<br>상시 허브의 티어·배지 위에 얹는 시즌 레이어입니다.</p>
+  <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal()">기대할게요</button></div>`); }
+function labAI(){ showModal(`<div class="big" style="background:var(--teal-bg)">🧩</div><h3>AI 맞춤 미션 (예고)</h3>
+  <p class="amt">유저의 행동 패턴을 바탕으로 <b>개인화 챌린지</b>를 자동 추천해요.<br>코어/신규 세그먼트를 넘어 1:1 개인화로 가는 방향입니다.</p>
+  <div class="mbtns"><button style="background:var(--blue);color:#fff" onclick="closeModal()">기대할게요</button></div>`); }
+
+/* ══════════════ 마이 ══════════════ */
+function renderMy(){
+  let total = S.krw;
+  const rows = Object.entries(S.holdings).filter(([,h])=>h.qty>0).map(([sym,h])=>{
+    const val=Math.round(h.qty*PRICE[sym]); total+=val;
+    return `<div class="hold-row"><div class="hn">${NAMES[sym]}<small>${sym}</small>${h.fromEvent?'<span class="from-ev">이벤트</span>':''}</div>
+      <div class="hv">${fmt(val)}원<div class="hq">${h.qty.toLocaleString('ko-KR',{maximumFractionDigits:4})} ${sym}</div></div></div>`;
+  });
+  $('myTotal').textContent = fmt(total)+' KRW';
+  $('holdList').innerHTML = `<div class="hold-row"><div class="hn">원화<small>KRW</small></div><div class="hv">${fmt(S.krw)}원</div></div>` + rows.join('');
+  const totalBoxes = Object.values(S.boxes).reduce((a,b)=>a+b,0);
+  $('boxTotal').textContent = '보유 '+totalBoxes+'개';
+  $('boxList').innerHTML = Object.entries(BOXDEF).map(([k,[e,n,bg]])=>`
+    <div class="boxcard"><div class="be">${e}</div><div class="name">${n}</div><div class="cnt">${S.boxes[k]||0}개</div>
+      <button ${S.boxes[k]?'':'disabled'} onclick="openBox('${k}')">열기</button></div>`).join('')
+    + `<div class="boxcard"><div class="be">🥇</div><div class="name">골드+</div><div class="cnt">정산 후</div><button disabled>7.15 오픈</button></div>`;
+  $('cpnState').textContent = S.couponGranted? (S.couponUsed?'사용 중 — 거래 수수료 할인':'미사용 · 거래 미션/포인트 교환') : '거래 미션 달성 또는 포인트 교환으로 획득';
+  const cb=$('cpnBtn');
+  if (S.couponUsed){ cb.className='chip chip-done'; cb.textContent='적용 중'; }
+  else if (!S.couponGranted){ cb.className='chip chip-done'; cb.textContent='미보유'; }
+  else { cb.className='chip chip-go'; cb.textContent='사용하기'; }
+  $('myTickets').textContent = S.tickets;
+  const pc=$('premiumCpn'); if(pc){ pc.style.display = S.premiumDays>0?'flex':'none'; if(S.premiumDays>0) $('premiumState').textContent = `이용 중 · ${S.premiumDays}일`; }
+  renderWallet();
+}
+/* ══════════════ 포인트 지갑 ══════════════ */
+function renderWallet(){
+  $('walletPoints').textContent = fmt(S.points);
+  $('walletExpire').textContent = fmt(Math.min(S.points, 80));   // 데모: 소멸 예정 표시
+  const uses = [
+    {e:'🎟', n:'수수료 쿠폰', p:'300P', d:'거래 수수료 20% 할인', fn:'useFeeCoupon()', dis:false},
+    {e:'🎫', n:'추첨 응모권', p:'100P', d:'이벤트 추첨 응모', fn:'useTicketExchange()', dis:false},
+    {e:'📈', n:'프리미엄 리서치', p:'500P', d:'심화 리포트 30일', fn:'useUnlockPremium()', dis:S.premiumDays>0},
+    {e:'🛍', n:'혜택몰', p:'준비중', d:'폐쇄형 상품 교환', fn:'useMall()', dis:true},
+  ];
+  $('useGrid').innerHTML = uses.map(u=>`
+    <div class="use-cell"><div class="ue">${u.e}</div><div class="un">${u.n}</div><div class="up">${u.p}</div><div class="ud">${u.d}</div>
+      <button onclick="${u.fn}" ${u.dis?'disabled':''}>${u.dis?(u.n==='프리미엄 리서치'?'이용 중':'준비중'):'교환'}</button></div>`).join('');
+  $('ledger').innerHTML = '<div style="font-size:11.5px;color:var(--ink-4);font-weight:600;margin-bottom:2px">적립·사용 내역</div>' +
+    S.pointsLog.slice(0,6).map(l=>`<div class="led-row"><div><div class="ld">${l.d}</div><div class="lt">${l.t}</div></div>
+      <div class="lv ${l.v>0?'plus':'minus'}">${l.v>0?'+':''}${fmt(l.v)}P</div></div>`).join('');
+}
+function renderLog(){
+  $('logList').innerHTML = S.log.length? S.log.map(l=>`<div class="logrow"><span class="lt">${l.t}</span>${l.text}</div>`).join('')
+    : '<div class="logrow"><span class="lt">-</span>아직 기록이 없어요. 이벤트에 참여해 보세요!</div>';
+}
+
+/* ══════════════ 티커 ══════════════ */
+const FEED3=[['박**','AVAX 순입금 미션'],['이**','NEAR 학습 퀴즈'],['최**','크로스토큰 콤보'],['정**','APT 거래 미션']];
+let fi=0; setInterval(()=>{ fi=(fi+1)%FEED3.length; const el=$('ev3Ticker');
+  if(el) el.innerHTML=`${FEED3[fi][0]}님이 <b>${FEED3[fi][1]}</b>을 달성했어요.`; },3400);
+const FEED2=[['김**','골드 랜덤박스'],['무**열','실버 랜덤박스'],['h***1','브론즈 랜덤박스'],['박**','골드+ 랜덤박스']];
+let f2=0; setInterval(()=>{ f2=(f2+1)%FEED2.length; const el=$('ev2Ticker');
+  if(el) el.innerHTML=`${FEED2[f2][0]}님이 <b>${FEED2[f2][1]}</b>를 받았어요.`; },3200);
+setInterval(()=>{ if (S.ev2.fcfs>150 && Math.random()<.4){ S.ev2.fcfs--; const el=$('ev2FcfsLeft');
+  if(el){ el.textContent='잔여 '+S.ev2.fcfs+'명'; $('ev2FcfsFill').style.width=(100-S.ev2.fcfs/5)+'%'; } } },3000);
+
+/* ══════════════ 운영·홀드아웃 대시보드 (경영진 데모 · 내부용) ══════════════ */
+function pointsUsageRate(){
+  let earned=0, spent=0;
+  S.pointsLog.forEach(l=> l.v>0 ? earned+=l.v : spent+=-l.v);
+  return earned>0 ? Math.round(spent/earned*100) : 0;
+}
+function renderAdmin(){
+  renderKpi(); renderHoldout(); renderMissionOps(); renderAnomalies(); renderCfoChecklist(); renderIssues();
+}
+function renderKpi(){
+  const usage = pointsUsageRate();
+  const gap = S.admin.holdout.treatment - S.admin.holdout.control;
+  const items = [
+    {l:'혜택 탭 방문율', v:'32%', t:'목표 ≥30% (MAU 456만 대비)', ok:true, src:'가정 시나리오'},
+    {l:'포인트 사용률', v:usage+'%', t:'목표 ≥50%', ok:usage>=50, src:'이 세션 실측'},
+    {l:'포인트 소멸률', v:'19%', t:'목표 15~25%', ok:true, src:'가정 시나리오'},
+    {l:'D90 리텐션 격차', v:'+'+gap+'%p', t:'목표 ≥+4%p', ok:gap>=4, src:'홀드아웃 실험 연동'},
+  ];
+  $('kpiGrid').innerHTML = items.map(it=>`
+    <div class="kpi-cell"><div class="kl">${it.l}</div><div class="kv">${it.v}</div><div class="kt">${it.t}</div>
+      <span class="kpi-pass ${it.ok?'ok':'warn'}">${it.ok?'달성':'미달'}</span><div class="kpi-src">${it.src}</div></div>`).join('');
+}
+function runHoldout(){
+  S.admin.holdout.treatment = 40 + Math.round(Math.random()*10);  // 40~50%
+  S.admin.holdout.control = 35 + Math.round(Math.random()*8);     // 35~43%
+  addLog(`[실험] 홀드아웃 재시뮬레이션 — Treatment ${S.admin.holdout.treatment}% / Control ${S.admin.holdout.control}%`);
+  renderAll();
+}
+function renderHoldout(){
+  const {treatment, control} = S.admin.holdout;
+  const gap = treatment - control, max = 60;
+  $('holdoutBars').innerHTML = `
+    <div class="hb-col"><div class="hb-val" style="color:var(--blue)">${treatment}%</div><div class="hb-bar" style="height:${treatment/max*100}%;background:var(--blue)"></div><div class="hb-label">Treatment<br>(허브 노출)</div></div>
+    <div class="hb-col"><div class="hb-val" style="color:var(--ink-3)">${control}%</div><div class="hb-bar" style="height:${control/max*100}%;background:var(--line-2)"></div><div class="hb-label">Control<br>(홀드아웃)</div></div>`;
+  $('holdoutGap').innerHTML = `D90 리텐션 격차 <span style="color:${gap>=4?'var(--teal)':'var(--red)'}">+${gap}%p</span> — ${gap>=4?'목표 충족':'목표 미달, 재검토 필요'}`;
+  $('killCriterion').innerHTML = `⚠️ Kill criterion: 8주 연속 격차 &lt;2%p면 허브 확장을 중단하고 재설계합니다. 현재 표본 기준 ${gap>=4?'통과':'주의'} 구간이에요.`;
+}
+function renderMissionOps(){
+  const all = [...HUB_MISSIONS.core.map(m=>({...m, seg:'코어'})), ...HUB_MISSIONS.new.map(m=>({...m, seg:'신규'}))];
+  $('missionOps').innerHTML = all.map(m=>{
+    const off = S.admin.missionOff[m.id];
+    const budgetPct = Math.min(100, 28 + m.pt);   // 데모용 예산 소진율
+    return `<div class="mission-op-row">
+      <div class="mop-body"><div class="mop-t ${off?'off':''}">${m.title} <span style="font-size:10.5px;color:var(--ink-4);font-weight:400">· ${m.seg}</span></div>
+        <div class="mop-bar"><div class="mop-fill" style="width:${budgetPct}%;background:${off?'var(--line-2)':'var(--blue)'}"></div></div>
+        <div class="mop-meta">보상 ${m.pt}P · 예산 소진 ${budgetPct}%</div></div>
+      <button class="switch ${off?'':'on'}" onclick="toggleMissionOp('${m.id}')" aria-label="${m.title} 활성화 토글"></button></div>`;
+  }).join('');
+}
+function toggleMissionOp(id){
+  S.admin.missionOff[id] = !S.admin.missionOff[id];
+  const m = findHubMission(id);
+  addLog(`[운영] 미션 '${m.title}' ${S.admin.missionOff[id]?'비활성화':'활성화'}`);
+  toast(`${m.title} — ${S.admin.missionOff[id]?'사용자 화면에서 숨겨졌어요':'사용자 화면에 다시 노출돼요'}`);
+  renderAll();
+}
+function renderAnomalies(){
+  const sevColor = {high:'var(--red)', mid:'var(--amber)', low:'var(--ink-4)'};
+  $('anomalyList').innerHTML = S.admin.anomalies.map(a=>`
+    <div class="anomaly-row"><div class="anomaly-sev" style="background:${sevColor[a.sev]}"></div>
+      <div class="anomaly-body"><div class="anomaly-t">${a.t}</div><div class="anomaly-d">${a.d} · 상태: ${a.status}</div></div>
+      <div class="anomaly-actions">${a.status==='대기'
+        ? `<button style="background:#f4f4f5;color:var(--ink-2)" onclick="anomalyAction(${a.id},'검토')">검토</button>
+           <button style="background:var(--red-soft);color:var(--red)" onclick="anomalyAction(${a.id},'환수')">환수</button>`
+        : `<span style="font-size:11.5px;color:var(--teal);font-weight:600">${a.status} 처리됨</span>`}</div></div>`).join('');
+}
+function anomalyAction(id, action){
+  const a = S.admin.anomalies.find(x=>x.id===id);
+  if (!a || a.status!=='대기') return;
+  a.status = action;
+  addLog(`[가드레일] ${a.t} → ${action} 처리`);
+  toast(`${action} 처리했어요`);
+  renderAll();
+}
+function renderCfoChecklist(){
+  const items = [
+    {k:'a', t:'순수 리텐션 ROI (광고 수익 제외하고 성립해야)'},
+    {k:'b', t:'홀드아웃 대조군 실제 운영 + kill criterion 확정'},
+    {k:'c', t:'하락장 스트레스 테스트 계획'},
+    {k:'d', t:'수익화 전 법무 의견서 (포인트 성격·세무)'},
+    {k:'e', t:'NPay 통합 시 허브 처리 방침 (write-off 리스크)'},
+  ];
+  $('cfoChecklist').innerHTML = items.map(it=>{
+    const on = S.admin.cfo[it.k];
+    return `<div class="check-row"><div class="check-box ${on?'on':''}" onclick="toggleCfo('${it.k}')">${on?'✓':''}</div><div>${it.t}</div></div>`;
+  }).join('');
+}
+function toggleCfo(k){ S.admin.cfo[k]=!S.admin.cfo[k]; renderAdmin(); }
+function renderIssues(){
+  const items = [
+    {t:'(a) 광고 수익 제외한 순수 ROI', tag:'확인 필요', cls:'warn'},
+    {t:'(b) 하락장에서의 리텐션 유효성', tag:'검증 중', cls:'info'},
+    {t:'(c) NPay 통합 시 매몰·오너십', tag:'미해결', cls:'danger'},
+  ];
+  $('issueList').innerHTML = items.map(it=>`<div class="issue-row"><div class="issue-t">${it.t}</div><span class="issue-tag ${it.cls}">${it.tag}</span></div>`).join('');
+}
+
+/* ══════════════ 렌더 루트 ══════════════ */
+function renderAll(){
+  renderHome(); renderHub(); renderExchange(); renderDeposit(); renderEv3(); renderEv2(); renderMy(); renderLog(); renderLab(); renderAdmin(); renderGuide();
+  applySavedEdits(); applyEditMode();
+}
+renderAll();
+</script>
+</body>
+</html>

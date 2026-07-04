@@ -1,0 +1,41 @@
+<svg width="680" height="520" viewBox="0 0 680 520" role="img" xmlns="http://www.w3.org/2000/svg" font-family="'Pretendard','Apple SD Gothic Neo','Malgun Gothic',sans-serif">
+  <title>미션 이벤트 3면 플라이휠</title>
+  <desc>운영실 재고(공급), 마케팅·모니터링(유입), 경영진(성과) 세 부서가 미션 리워드 엔진을 중심으로 서로를 강화하는 순환. 성과·데이터가 재단 스폰서 유치로 이어져 재원이 확대되고 플라이휠이 가속된다.</desc>
+  <defs>
+    <marker id="ah" markerWidth="11" markerHeight="8" refX="8" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <line x1="340" y1="238" x2="340" y2="132" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="302" y1="300" x2="192" y2="388" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3"/>
+  <line x1="378" y1="300" x2="488" y2="388" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3 3"/>
+
+  <path d="M248,130 Q58,252 150,384" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+  <path d="M259,434 Q340,496 421,434" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+  <path d="M524,386 Q632,252 444,132" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#ah)"/>
+
+  <text x="74" y="238" text-anchor="middle" fill="#475569" font-size="12">보상 재원</text>
+  <text x="74" y="254" text-anchor="middle" fill="#475569" font-size="12">공급</text>
+  <text x="340" y="456" text-anchor="middle" fill="#475569" font-size="12">순입금·거래 유치</text>
+  <text x="636" y="238" text-anchor="end" fill="#475569" font-size="12">성과·데이터 →</text>
+  <text x="636" y="254" text-anchor="end" fill="#475569" font-size="12">재단 스폰서로 재원 확대</text>
+
+  <rect x="235" y="58" width="210" height="72" rx="12" fill="#d1faf1" stroke="#5eead4" stroke-width="1"/>
+  <text x="340" y="90" text-anchor="middle" fill="#115e59" font-size="14" font-weight="500">운영실 · 공급</text>
+  <text x="340" y="110" text-anchor="middle" fill="#0f766e" font-size="12">유휴 알트 재고 → 랜덤박스</text>
+
+  <rect x="55" y="388" width="200" height="80" rx="12" fill="#e0edff" stroke="#93c5fd" stroke-width="1"/>
+  <text x="155" y="420" text-anchor="middle" fill="#1e40af" font-size="14" font-weight="500">마케팅 · 모니터링</text>
+  <text x="155" y="440" text-anchor="middle" fill="#1d4ed8" font-size="12">UA·재단 커뮤니티 유입</text>
+
+  <rect x="425" y="388" width="200" height="80" rx="12" fill="#fef3c7" stroke="#fcd34d" stroke-width="1"/>
+  <text x="525" y="420" text-anchor="middle" fill="#92400e" font-size="14" font-weight="500">경영진 · 성과</text>
+  <text x="525" y="440" text-anchor="middle" fill="#b45309" font-size="12">거래·입금·잔고 KPI</text>
+
+  <rect x="255" y="238" width="170" height="64" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="340" y="266" text-anchor="middle" fill="#334155" font-size="14" font-weight="500">미션 리워드 엔진</text>
+  <text x="340" y="286" text-anchor="middle" fill="#64748b" font-size="12">2-레이어 이벤트·허브</text>
+
+  <text x="340" y="504" text-anchor="middle" fill="#64748b" font-size="12">순환마다 외부 재원이 유입되어 보상 규모가 커지고 플라이휠이 가속된다</text>
+</svg>
